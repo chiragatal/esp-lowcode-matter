@@ -33,30 +33,26 @@
 	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace/esp-lowcode-matter,type=bind",
 	"remoteUser": "root",
 
-	"onCreateCommand": "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git wget flex bison gperf python3 python3-pip python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 libcairo2-dev && mkdir -p /workspace && cd /workspace && git clone --depth 1 https://github.com/espressif/esp-idf.git -b release/v5.3 && cd /workspace/esp-idf && git submodule update --init && ./install.sh esp32c6 && . ./export.sh && cd /workspace && git clone --depth 1 https://github.com/chiragatal/esp-amp.git -b main && cd /workspace/esp-amp && export ESP_AMP_PATH=/workspace/esp-amp && cd /workspace/esp-lowcode-matter && export LOW_CODE_PATH=/workspace/esp-lowcode-matter && ./install.sh && . ./export.sh",
-
-	"postCreateCommand": ". /workspace/esp-idf/export.sh && . /workspace/esp-lowcode-matter/export.sh",
-
-	"postStartCommand": ". /workspace/esp-idf/export.sh && . /workspace/esp-lowcode-matter/export.sh",
+	"onCreateCommand": "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git wget flex bison gperf python3 python3-pip python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 libcairo2-dev && mkdir -p /workspace && cd /workspace && git clone --depth 1 https://github.com/espressif/esp-idf.git -b release/v5.3 && cd /workspace/esp-idf && git submodule update --init && ./install.sh esp32c6 && . ./export.sh && cd /workspace && git clone --depth 1 https://github.com/chiragatal/esp-amp.git -b main && cd /workspace/esp-amp && export ESP_AMP_PATH=/workspace/esp-amp && cd /workspace/esp-lowcode-matter && export LOW_CODE_PATH=/workspace/esp-lowcode-matter && ./install.sh && . ./export.sh && echo '. /workspace/esp-idf/export.sh' >> ~/.bashrc && echo '. /workspace/esp-lowcode-matter/export.sh' >> ~/.bashrc",
 
 	"containerEnv": {
 		"IDF_PATH": "/workspace/esp-idf",
 		"ESP_AMP_PATH": "/workspace/esp-amp",
 		"LOW_CODE_PATH": "/workspace/esp-lowcode-matter",
-		"ESP_MATTER_PATH": "workspace/esp-lowcode-matter/tools/dependencies/esp-matter",
-		"ZAP_INSTALL_PATH": "$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap",
-		"ESP_RMAKER_PATH": "workspace/esp-lowcode-matter/tools/dependencies/esp-rainmaker",
-		"ESP_SECURE_CERT_PATH": "workspace/esp-lowcode-matter/tools/dependencies/esp_secure_cert_mgr",
-		"MATTER_ONE_PATH": "workspace/esp-lowcode-matter/tools/dependencies/matter-one"
+		"ESP_MATTER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter",
+		"ZAP_INSTALL_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap",
+		"ESP_RMAKER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-rainmaker",
+		"ESP_SECURE_CERT_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp_secure_cert_mgr",
+		"MATTER_ONE_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/matter-one"
 	},
 	"remoteEnv": {
 		"IDF_PATH": "/workspace/esp-idf",
 		"ESP_AMP_PATH": "/workspace/esp-amp",
 		"LOW_CODE_PATH": "/workspace/esp-lowcode-matter",
-		"ESP_MATTER_PATH": "workspace/esp-lowcode-matter/tools/dependencies/esp-matter",
-		"ZAP_INSTALL_PATH": "$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap",
-		"ESP_RMAKER_PATH": "workspace/esp-lowcode-matter/tools/dependencies/esp-rainmaker",
-		"ESP_SECURE_CERT_PATH": "workspace/esp-lowcode-matter/tools/dependencies/esp_secure_cert_mgr",
-		"MATTER_ONE_PATH": "workspace/esp-lowcode-matter/tools/dependencies/matter-one"
+		"ESP_MATTER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter",
+		"ZAP_INSTALL_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap",
+		"ESP_RMAKER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-rainmaker",
+		"ESP_SECURE_CERT_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp_secure_cert_mgr",
+		"MATTER_ONE_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/matter-one"
 	}
 }
