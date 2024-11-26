@@ -17,20 +17,6 @@
 					"twxs.cmake"
 				]
 			}
-		},
-		"codespaces": {
-			"repositories": {
-				"espressif/esp-idf": {
-					"permissions": {
-						"contents": "read"
-					}
-				},
-				"chiragatal/esp-amp": {
-					"permissions": {
-						"contents": "read"
-					}
-				}
-			}
 		}
 	},
 	"workspaceFolder": "/workspace/esp-lowcode-matter",

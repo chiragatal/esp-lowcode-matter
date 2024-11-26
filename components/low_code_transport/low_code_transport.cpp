@@ -38,9 +38,9 @@ static uint8_t buffer[BUF_SIZE];
 static int transport_lp_core_external_to_internal_send_event(device_feature_event_t *event)
 {
     size_t buffer_size = sizeof(device_feature_event_t) + event->event_data_size;
-    void *buffer = esp_amp_rpmsg_create_msg(&esp_amp_device, buffer_size, ESP_AMP_RPMSG_DATA_DEFAULT);
+    void *buffer = esp_amp_rpmsg_create_message(&esp_amp_device, buffer_size, ESP_AMP_RPMSG_DATA_DEFAULT);
     if (buffer == NULL) {
-        printf("%s: esp_amp_rpmsg_create_msg failed\n", TAG);
+        printf("%s: esp_amp_rpmsg_create_message failed\n", TAG);
         return ESP_ERR_NO_MEM;
     }
     memcpy(buffer, event, sizeof(device_feature_event_t));
@@ -57,9 +57,9 @@ static int transport_lp_core_external_to_internal_send_event(device_feature_even
 static int transport_lp_core_external_to_internal_feature_update(device_feature_data_t *data)
 {
     size_t buffer_size = sizeof(device_feature_data_t) + data->value.value_len;
-    void *buffer = esp_amp_rpmsg_create_msg(&esp_amp_device, buffer_size, ESP_AMP_RPMSG_DATA_DEFAULT);
+    void *buffer = esp_amp_rpmsg_create_message(&esp_amp_device, buffer_size, ESP_AMP_RPMSG_DATA_DEFAULT);
     if (buffer == NULL) {
-        printf("%s: esp_amp_rpmsg_create_msg failed\n", TAG);
+        printf("%s: esp_amp_rpmsg_create_message failed\n", TAG);
         return ESP_ERR_NO_MEM;
     }
     memcpy(buffer, data, sizeof(device_feature_data_t));
@@ -116,8 +116,8 @@ static int transport_lp_core_external_init(void)
         return ret;
     }
 
-    esp_amp_rpmsg_create_ept(&esp_amp_device, ESP_AMP_ENDPOINT_EVENT, external_from_internal_event_cb, NULL, &esp_amp_endpoint_event);
-    esp_amp_rpmsg_create_ept(&esp_amp_device, ESP_AMP_ENDPOINT_DEVICE_FEATURE, external_from_internal_data_cb, NULL, &esp_amp_endpoint_device_feature);
+    esp_amp_rpmsg_create_endpoint(&esp_amp_device, ESP_AMP_ENDPOINT_EVENT, external_from_internal_event_cb, NULL, &esp_amp_endpoint_event);
+    esp_amp_rpmsg_create_endpoint(&esp_amp_device, ESP_AMP_ENDPOINT_DEVICE_FEATURE, external_from_internal_data_cb, NULL, &esp_amp_endpoint_device_feature);
 
     esp_amp_event_notify(ESP_AMP_EVENT_SUBCORE_READY);
 
