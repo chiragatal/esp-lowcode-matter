@@ -11,7 +11,11 @@
 					"esp-idf-release-v5.3": false,
 					"esp-amp": false
 				},
-				"extensions.ignoreRecommendations": true
+				"extensions.ignoreRecommendations": true,
+				"unwantedExtensions": [
+					"ms-vscode.cmake-tools",
+					"twxs.cmake"
+				]
 			}
 		},
 		"codespaces": {
