@@ -2,12 +2,16 @@
 
 set -e
 
-# Check if ESP_MATTER_PATH is set
-if [ -z "$ESP_MATTER_PATH" ]; then
-    echo "Error: ESP_MATTER_PATH is not set. Please set it before running this script."
-    echo "You can set it by running: export ESP_MATTER_PATH=/path/to/esp-matter"
-    exit
-fi
+# Function to create a status JSON file
+create_status_json() {
+    local product_folder="$1"
+    local status="$2"
+    local description="$3"
+    local details="$4"
+    local status_file="$product_folder/configuration/output/status.json"
+
+    echo "{\"status\": \"$status\", \"description\": \"$description\", \"details\": \"$details\"}" > "$status_file"
+}
 
 # Take the path to product folder as an input
 if [ $# -eq 0 ]; then
@@ -29,12 +33,21 @@ product_folder=$(realpath "$product_folder")
 echo "Using product folder: $product_folder"
 mkdir -p "$product_folder/configuration/output"
 
+# Check if ESP_MATTER_PATH is set
+if [ -z "$ESP_MATTER_PATH" ]; then
+    echo "Error: ESP_MATTER_PATH is not set. Please set it before running this script."
+    echo "You can set it by running: export ESP_MATTER_PATH=/path/to/esp-matter"
+    create_status_json "$product_folder" "Failure" "ESP_MATTER_PATH is not set" "Please set it by running: export ESP_MATTER_PATH=/path/to/esp-matter"
+    exit
+fi
+
 # Find the first .zap file in the product folder
 zap_file=$(find "$(realpath "$product_folder/configuration")" -name "*.zap" -print -quit)
 
 # Check if a .zap file was found
 if [ -z "$zap_file" ]; then
     echo "Error: No .zap file found in $product_folder/configuration"
+    create_status_json "$product_folder" "Failure" "No .zap file found" "Check the logs for more details"
     exit
 fi
 
@@ -51,6 +64,7 @@ matter_file=$(find "$(realpath "$product_folder/configuration/output")" -name "*
 # Check if a .matter file was found
 if [ -z "$matter_file" ]; then
     echo "Error: No .matter file found in $product_folder/configuration/output"
+    create_status_json "$product_folder" "Failure" "No .matter file found" "Check the logs for more details"
     exit
 fi
 
@@ -63,6 +77,7 @@ python3 main.py "$matter_file"
 # Check if the script executed successfully
 if [ $? -ne 0 ]; then
     echo "Error: Failed to execute main.py"
+    create_status_json "$product_folder" "Failure" "Failed to execute main.py" "Check the logs for more details"
     exit
 fi
 
@@ -74,5 +89,11 @@ cp "$product_folder/configuration/output/data_model.bin" "$product_folder/config
 # Get the current script's path
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd $SCRIPT_DIR/../mfg
-python3 mfg_gen.py --product configuration --products_path $product_folder --no_config_validation --test --output_path $product_folder/configuration/output --local_claim --no_rainmaker --no_signature --no_ota_decryption
+python3 mfg_gen.py --product configuration --products_path $product_folder --test --output_path $product_folder/configuration/output --local_claim --no_rainmaker --no_signature --no_ota_decryption || exit_code=$?
+if [ $exit_code -ne 0 ]; then
+    echo "Error: mfg_gen.py execution failed"
+    create_status_json "$product_folder" "Failure" "mfg_gen.py execution failed" "Check the logs for more details"
+    exit
+fi
 cd -
+create_status_json "$product_folder" "Success" "Successfully generated binary and JSON files from .matter file" "Check the logs for more details"
