@@ -4,18 +4,16 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"GAEsp.vscode-lowcode-extension-beta"
+				"GAEsp.vscode-lowcode-extension-beta",
+				"-ms-vscode.cmake-tools",
+				"-twxs.cmake"
 			],
 			"settings": {
 				"files.exclude": {
 					"esp-idf-release-v5.3": false,
 					"esp-amp": false
 				},
-				"extensions.ignoreRecommendations": true,
-				"unwantedExtensions": [
-					"ms-vscode.cmake-tools",
-					"twxs.cmake"
-				]
+				"extensions.ignoreRecommendations": true
 			}
 		}
 	},
