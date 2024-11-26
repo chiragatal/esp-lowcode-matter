@@ -9,11 +9,17 @@
 				"-twxs.cmake"
 			],
 			"settings": {
+				"extensions.ignoreRecommendations": true,
 				"files.exclude": {
-					"esp-idf-release-v5.3": false,
+					"esp-idf": false,
 					"esp-amp": false
 				},
-				"extensions.ignoreRecommendations": true
+				"C_Cpp.default.includePath": [
+					"${workspaceFolder}/**",
+					"/workspace/esp-lowcode-matter/**",
+					"/workspace/esp-idf/**",
+					"/workspace/esp-amp/**"
+				]
 			}
 		}
 	},
