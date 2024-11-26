@@ -4,7 +4,7 @@
 
 ### Start Codespace
 
-- Go to <https://github.com/chiragatal/esp-lowcode-matter/>
+- Go to <https://github.com/chiragatal/esp-lowcode-matter/> and make sure you are logged in to GitHub
 - Click on the green "Code" button -> Codespaces -> Create Codespace on Main
 - This might take about 5 minutes to setup
 - In the process, the codespace will restart a few times
