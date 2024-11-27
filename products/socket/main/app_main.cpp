@@ -21,7 +21,7 @@
 #include <device_features.h>
 #include <light_driver.h>
 
-#include <app_driver.h>
+#include "app_driver.h"
 
 static const char *TAG = "low_code";
 

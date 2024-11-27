@@ -20,7 +20,7 @@
 #include <relay_driver.h>
 #include <light_driver.h>
 
-#include <app_driver.h>
+#include "app_driver.h"
 
 #define BUTTON_GPIO_NUM 0
 #define RELAY_GPIO_NUM 2

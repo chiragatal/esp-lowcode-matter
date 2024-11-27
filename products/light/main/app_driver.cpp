@@ -16,7 +16,7 @@
 
 #include <light_driver.h>
 
-#include <app_driver.h>
+#include "app_driver.h"
 
 #define COLD_CHANNEL_IO 4
 #define WARM_CHANNEL_IO 6

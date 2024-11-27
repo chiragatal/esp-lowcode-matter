@@ -17,7 +17,7 @@
 #include <low_code_transport.h>
 #include <device_features.h>
 
-#include <app_driver.h>
+#include "app_driver.h"
 
 static const char *TAG = "low_code";
 
