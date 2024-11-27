@@ -90,13 +90,11 @@ cp "$product_folder/configuration/output/data_model.bin" "$product_folder/config
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd $SCRIPT_DIR/../mfg
 
-if [ -z "$2" ]; then
-    python3 mfg_gen.py --product configuration --products_path $product_folder --test --output_path $product_folder/configuration/output --local_claim --no_rainmaker --no_signature --no_ota_decryption || exit_code=$?
-else
-    chip="$2"
-    mac_address="$3"
-    python3 mfg_gen.py --product configuration --products_path $product_folder --output_path $product_folder/configuration/output --local_claim --no_rainmaker --no_signature --no_ota_decryption --not_connected_device_details $chip $mac_address || exit_code=$?
-fi
+exit_code=0
+chip="$2"
+mac_address="$3"
+python3 mfg_gen.py --product configuration --products_path $product_folder --output_path $product_folder/configuration/output/$mac_address --local_claim --no_rainmaker --no_signature --no_ota_decryption --not_connected_device_details $chip $mac_address || exit_code=$?
+
 if [ $exit_code -ne 0 ]; then
     echo "Error: mfg_gen.py execution failed"
     create_status_json "$product_folder" "Failure" "mfg_gen.py execution failed" "Check the logs for more details"
