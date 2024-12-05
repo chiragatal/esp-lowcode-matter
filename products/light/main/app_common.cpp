@@ -13,7 +13,9 @@
 // limitations under the License.
 
 #include <low_code_transport.h>
-#include <lp_sw_timer.h>
+
+/* This is needed for the timer based events like button press */
+// #include <lp_sw_timer.h>
 
 void system_loop()
 {
