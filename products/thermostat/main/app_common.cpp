@@ -17,7 +17,8 @@
 
 void system_loop()
 {
-    lp_sw_timer_run();
+    /* This is needed for the timer based events like button press */
+    // lp_sw_timer_run();
 }
 
 void system_setup()
