@@ -42,7 +42,7 @@ int low_code_feature_update_from_system(low_code_feature_data_t *data)
     uint16_t endpoint_id = data->details.endpoint_id;
     uint32_t feature_id = data->details.feature_id;
 
-    printf("%s: Feature update: endpoint: %d, feature: %d\n", TAG, endpoint_id, feature_id);
+    printf("%s: Feature update: endpoint: %u, feature: %lu\n", TAG, endpoint_id, feature_id);
     return app_driver_feature_update();
 }
 
