@@ -15,6 +15,19 @@
 #pragma once
 
 #include <stdint.h>
+#include <low_code.h>
 
+/* Driver functions */
 int app_driver_init();
-int app_driver_feature_update();
+int app_driver_set_socket_state(bool state);
+
+/* Events handler */
+int app_driver_event_handler(low_code_event_t *event);
+
+/* Callbacks from system */
+int low_code_feature_update_from_system(low_code_feature_data_t *data);
+int low_code_event_from_system(low_code_event_t *event);
+
+/* System functions */
+void system_loop();
+void system_setup();

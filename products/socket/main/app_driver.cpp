@@ -15,14 +15,14 @@
 #include <stdio.h>
 #include <ulp_lp_core_utils.h>
 
-#include <device_features.h>
+#include <low_code.h>
 #include <button_driver.h>
 #include <relay_driver.h>
 #include <light_driver.h>
 
-#include "app_driver.h"
+#include "app_priv.h"
 
-#define BUTTON_GPIO_NUM 0
+#define BUTTON_GPIO_NUM 9
 #define RELAY_GPIO_NUM 2
 #define INDICATOR_GPIO_NUM 3
 
@@ -36,31 +36,30 @@ static void app_driver_toggle_socket_state_button_callback(void *arg, void *data
     printf("%s: Set socket state to %d\n", TAG, socket_state);
     app_driver_set_socket_state(socket_state);
 
-    /* Update the device feature */
-    device_feature_data_t update_data = {
+    /* Update the feature */
+    low_code_feature_data_t update_data = {
         .details = {
-            .endpoint_id = 0x0001,
-            .cluster_id = 0x0006,
-            .attribute_id = 0x0000,
+            .endpoint_id = 1,
+            .feature_id = LOW_CODE_FEATURE_ID_POWER
         },
         .value = {
-            .type = DEVICE_FEATURES_VALUE_TYPE_BOOLEAN,
+            .type = LOW_CODE_VALUE_TYPE_BOOLEAN,
             .value_len = sizeof(bool),
             .value = (uint8_t*)&socket_state,
         },
     };
 
-    device_features_external_to_internal_feature_update(&update_data);
+    low_code_feature_update_to_system(&update_data);
 }
 
 static void app_driver_trigger_factory_reset_button_callback(void *arg, void *data)
 {
     /* Update by sending event */
-    device_feature_event_t event = {
-        .event_type = DEVICE_FEATURES_EVENT_FACTORY_RESET
+    low_code_event_t event = {
+        .event_type = LOW_CODE_EVENT_FACTORY_RESET
     };
 
-    device_features_external_to_internal_event_update(&event);
+    low_code_event_to_system(&event);
     printf("%s: Factory reset triggered\n", TAG);
 }
 
@@ -116,5 +115,82 @@ int app_driver_set_socket_state(bool state)
     printf("%s: Set socket state to %d\n", TAG, state);
     relay_driver_set_power(RELAY_GPIO_NUM, state);
     light_driver_set_power(state);
+    return 0;
+}
+
+int app_driver_event_handler(low_code_event_t *event)
+{
+    /* Get the events. Approriate indicators should be shown to the user based on the event. */
+    printf("%s: Received event: %d\n", TAG, event->event_type);
+    light_effect_config_t effect_config = {
+        .type = LIGHT_EFFECT_INVALID,
+        .mode = LIGHT_WORK_MODE_WHITE, /* Since it is a single channel LED */
+        .max_brightness = 100,
+        .min_brightness = 10
+    };
+
+    /* Handle the events from low_code_event_type_t */
+    switch (event->event_type) {
+        case LOW_CODE_EVENT_SETUP_MODE_START:
+            printf("%s: Setup mode started\n", TAG);
+            /* Start Indication */
+            effect_config.type = LIGHT_EFFECT_BLINK;
+            light_driver_effect_start(&effect_config, 2000, 0);
+            break;
+        case LOW_CODE_EVENT_SETUP_MODE_END:
+            printf("%s: Setup mode ended\n", TAG);
+            /* Stop Indication */
+            light_driver_effect_stop();
+            break;
+        case LOW_CODE_EVENT_SETUP_DEVICE_CONNECTED:
+            printf("%s: Device connected during setup\n", TAG);
+            break;
+        case LOW_CODE_EVENT_SETUP_STARTED:
+            printf("%s: Setup process started\n", TAG);
+            break;
+        case LOW_CODE_EVENT_SETUP_SUCCESSFUL:
+            printf("%s: Setup process successful\n", TAG);
+            break;
+        case LOW_CODE_EVENT_SETUP_FAILED:
+            printf("%s: Setup process failed\n", TAG);
+            break;
+        case LOW_CODE_EVENT_NETWORK_CONNECTED:
+            printf("%s: Network connected\n", TAG);
+            break;
+        case LOW_CODE_EVENT_NETWORK_DISCONNECTED:
+            printf("%s: Network disconnected\n", TAG);
+            break;
+        case LOW_CODE_EVENT_OTA_STARTED:
+            printf("%s: OTA update started\n", TAG);
+            break;
+        case LOW_CODE_EVENT_OTA_STOPPED:
+            printf("%s: OTA update stopped\n", TAG);
+            break;
+        case LOW_CODE_EVENT_READY:
+            printf("%s: Device is ready\n", TAG);
+            break;
+        case LOW_CODE_EVENT_IDENTIFICATION_START:
+            printf("%s: Identification started\n", TAG);
+            break;
+        case LOW_CODE_EVENT_IDENTIFICATION_STOP:
+            printf("%s: Identification stopped\n", TAG);
+            break;
+        case LOW_CODE_EVENT_TEST_MODE_LOW_CODE:
+            printf("%s: Low code test mode is triggered for subtype: %d\n", TAG, (int)*((int*)(event->event_data)));
+            break;
+        case LOW_CODE_EVENT_TEST_MODE_COMMON:
+            printf("%s: common test mode triggered\n", TAG);
+            break;
+        case LOW_CODE_EVENT_TEST_MODE_BLE:
+            printf("%s: ble test mode triggered\n", TAG);
+            break;
+        case LOW_CODE_EVENT_TEST_MODE_SNIFFER:
+            printf("%s: sniffer test mode triggered\n", TAG);
+            break;
+        default:
+            printf("%s: Unhandled event type: %d\n", TAG, event->event_type);
+            break;
+    }
+
     return 0;
 }

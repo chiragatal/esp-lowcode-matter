@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include <low_code_transport.h>
+#include <lp_sw_timer.h>
 
-#include <stdint.h>
+void system_loop()
+{
+    lp_sw_timer_run();
+}
 
-int app_driver_init();
-int app_driver_set_temperature(int16_t temperature);
-int app_driver_set_cooling_setpoint(int16_t cooling_setpoint);
-int app_driver_set_heating_setpoint(int16_t heating_setpoint);
+void system_setup()
+{
+    low_code_transport_register_callbacks();
+}

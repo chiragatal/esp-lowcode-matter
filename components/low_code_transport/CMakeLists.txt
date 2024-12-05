@@ -1,3 +1,3 @@
 idf_component_register(SRC_DIRS .
                        INCLUDE_DIRS .
-                       REQUIRES device_features ulp esp_amp)
+                       REQUIRES low_code ulp esp_amp)

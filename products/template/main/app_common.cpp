@@ -12,6 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include <low_code_transport.h>
+#include <lp_sw_timer.h>
 
-int low_code_transport_register_callbacks();
+void system_loop()
+{
+    lp_sw_timer_run();
+}
+
+void system_setup()
+{
+    low_code_transport_register_callbacks();
+}

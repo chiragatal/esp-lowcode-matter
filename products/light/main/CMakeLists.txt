@@ -1,3 +1,3 @@
-idf_component_register(SRC_DIRS .
-                        INCLUDE_DIRS .
-                        REQUIRES device_features low_code_transport light)
+idf_component_register(SRC_DIRS . ../../common
+                        INCLUDE_DIRS . ../../common
+                        REQUIRES low_code low_code_transport light)

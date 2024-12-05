@@ -19,25 +19,16 @@
 There are a few commands avaliable with "Lowcode:" prefix. There are also **buttons on the bottom** of the screen.
 
 - **Select Product**: Start by selecting the product that you want to create
-
-These needs to be done only once for each device. But needs to be done separately for each device.
-
 - **Select Port**: Connect your **esp32c6** board to your computer via USB, and select the port
-- **Flash Prebuilt Binaries**: Flash the prebuilt binaries to your esp32c6 board
-- **Generate Per Device Data**: Generate the required device certificates and the qr code for the device
-- **Flash Per Device Data**: Flash the generated device certificates and qr code data
-- **QR Code**: Open the QR code in a new tab
+- **Prepare Device**: Erase the flash on the device and flash the prebuilt binaries to your esp32c6 board
+- **Upload Configuration**: Generate the required device certificates and the qr code for the device and flash them to the device
+- **Upload Code**: Build, flash and run the code on the device
 
-> Note: The QR code is only available when the product side code is flashed to the device.
-
-The product side code being light weight, the edit, build, debug cycle is fast.
+Some other commands to help with development:
 
 - **Build**: Build the selected product
 - **Flash**: Flash the built product to your esp32c6 board
 - **Console**: Open the device console to view the logs
-
-Some other commands to help with development:
-
 - **Erase Flash**: Erase the flash storage
 - **Menuconfig**: Open the menuconfig for the selected product
 - **Product Clean**: Clean the build system

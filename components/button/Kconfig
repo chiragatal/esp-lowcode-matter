@@ -6,7 +6,16 @@ menu "BUTTON"
         config BUTTON_DRIVER_USE_HP_GPIO
         bool "Select HP GPIO as button input"
 
+        config HP_BUTTON_LOOP_INTERVAL
+        depends on BUTTON_DRIVER_USE_HP_GPIO
+        int "Interval between HP GPIO timer in ms"
+        default 50
+
         config BUTTON_DRIVER_USE_LP_GPIO
         bool "Select LP GPIO as button input"
     endchoice
+
+    config MAX_BUTTON_NUM
+    int "Maximum number of buttons"
+    default 4
 endmenu
