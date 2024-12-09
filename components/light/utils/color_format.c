@@ -16,45 +16,47 @@
 void hsv_to_rgb(HS_color_t HS, uint8_t brightness, RGB_color_t *RGB)
 {
     uint16_t hue = HS.hue % 360;
-    uint16_t hi = (hue / 60) % 6;
-    uint16_t F = 100 * hue / 60 - 100 * hi;
-    uint16_t P = brightness * (100 - HS.saturation) / 100;
-    uint16_t Q = brightness * (10000 - F * HS.saturation) / 10000;
-    uint16_t T = brightness * (10000 - HS.saturation * (100 - F)) / 10000;
+    uint16_t hi = hue / 60;
+    uint16_t remainder = (hue - (hi * 60)) * 255 / 60;
+    uint16_t sBrightness = brightness * 255 / 100;
+    uint16_t sSaturation = HS.saturation * 255 / 100;
+    uint16_t P = sBrightness * (255 - sSaturation) / 255;
+    uint16_t Q = (sBrightness * (255 - (sSaturation * remainder) / 255)) / 255;
+    uint16_t T = (sBrightness * (255 - (sSaturation * (255 - remainder)) / 255)) / 255;
 
     switch (hi) {
     case 0:
-        RGB->red = brightness;
+        RGB->red = sBrightness;
         RGB->green = T;
         RGB->blue = P;
         break;
 
     case 1:
         RGB->red = Q;
-        RGB->green = brightness;
+        RGB->green = sBrightness;
         RGB->blue = P;
         break;
 
     case 2:
         RGB->red = P;
-        RGB->green = brightness;
+        RGB->green = sBrightness;
         RGB->blue = T;
         break;
 
     case 3:
         RGB->red = P;
         RGB->green = Q;
-        RGB->blue = brightness;
+        RGB->blue = sBrightness;
         break;
 
     case 4:
         RGB->red = T;
         RGB->green = P;
-        RGB->blue = brightness;
+        RGB->blue = sBrightness;
         break;
 
     case 5:
-        RGB->red = brightness;
+        RGB->red = sBrightness;
         RGB->green = P;
         RGB->blue = Q;
         break;
@@ -62,10 +64,51 @@ void hsv_to_rgb(HS_color_t HS, uint8_t brightness, RGB_color_t *RGB)
     default:
         break;
     }
+}
 
-    RGB->red = RGB->red * 255 / 100;
-    RGB->green = RGB->green * 255 / 100;
-    RGB->blue = RGB->blue * 255 / 100;
+void rgb2hs(RGB_color_t RGB, HS_color_t *HS) {
+    int16_t min = RGB.red < RGB.green ? RGB.red : RGB.green;
+    min = min < RGB.blue ? min : RGB.blue;
+
+    int16_t max = RGB.red > RGB.green ? RGB.red : RGB.green;
+    max = max > RGB.blue ? max : RGB.blue;
+
+    int16_t delta = max - min;
+
+    if (max != 0) {
+        HS->saturation = delta * 100 / max;
+    } else {
+        HS->hue = 0;
+        HS->saturation = 0;
+        return;
+    }
+
+    int16_t hue = 0;
+    int16_t r = RGB.red;
+    int16_t g = RGB.green;
+    int16_t b = RGB.blue;
+
+    if (RGB.red == max) {
+        // between yellow & magenta
+        hue = (60 * (g - b)) / delta;
+    } else if (RGB.green == max) {
+        // between cyan & yellow
+        hue = 120 + (60 * (b - r)) / delta;
+    } else {
+        hue = 240 + (60 * (r - g)) / delta;
+    }
+
+    if (hue < 0) {
+        hue += 360;
+    } else if (hue >= 360) {
+        hue -= 360;
+    }
+
+    HS->hue = hue;
+
+
+    return;
+
 }
 
 // A Table from color temperature to hue and saturation.
@@ -100,18 +143,32 @@ void temp_to_hs(uint32_t temperature, HS_color_t *HS)
     HS->saturation = temp_table[(temperature - 600) / 100].saturation;
 }
 
+// remap temperature to cold/warm (larger temperature range)
 void temp_to_cw(uint32_t temperature, CW_white_t *CW)
 {
-    if (temperature < 2000) {
+    if (temperature < 300) {
         CW->cold = 0;
         CW->warm = 100;
         return;
     }
-    if (temperature > 7000) {
+    if (temperature > 10300) {
         CW->cold = 100;
         CW->warm = 0;
         return;
     }
-    CW->cold = temperature/50-40;
-    CW->warm = 140-temperature/50;
+    CW->cold = temperature/100-3;
+    CW->warm = 100-CW->cold;
+}
+
+void cw_to_temp(CW_white_t CW, uint32_t* temperature) {
+    // scale CW to 0~100
+    CW.cold = 100 * CW.cold / (CW.cold + CW.warm);
+    CW.warm = 100 - CW.cold;
+    *temperature = (CW.cold + 3) * 100;
+}
+
+void cw_to_hsv(CW_white_t CW, HS_color_t* HS) {
+    uint32_t temperature = 0;
+    cw_to_temp(CW, &temperature);
+    temp_to_hs(temperature, HS);
 }

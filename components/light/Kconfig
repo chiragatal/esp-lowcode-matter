@@ -1,0 +1,12 @@
+menu "Light"
+    choice LIGHT_DEVICE_TYPE
+        prompt "Select light device type"
+        default USE_LIGHT_DEVICE_TYPE_WS2812
+
+        config USE_LIGHT_DEVICE_TYPE_WS2812
+        bool "Select WS2812 as light device"
+
+        config USE_LIGHT_DEVICE_TYPE_LED
+        bool "Select LED as light device"
+    endchoice
+endmenu

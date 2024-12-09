@@ -36,9 +36,15 @@ typedef struct {
 
 void temp_to_hs(uint32_t temperature, HS_color_t *HS);
 
+void rgb2hs(RGB_color_t RGB, HS_color_t *HS);
+
 void temp_to_cw(uint32_t temperature, CW_white_t *CW);
 
 void hsv_to_rgb(HS_color_t HS, uint8_t brightness, RGB_color_t *RGB);
+
+void cw_to_temp(CW_white_t CW, uint32_t* temperature);
+
+void cw_to_hsv(CW_white_t CW, HS_color_t* HS);
 
 #ifdef __cplusplus
 }

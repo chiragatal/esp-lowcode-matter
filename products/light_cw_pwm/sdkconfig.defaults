@@ -1,0 +1,2 @@
+# set light type to led
+CONFIG_USE_LIGHT_DEVICE_TYPE_LED=y

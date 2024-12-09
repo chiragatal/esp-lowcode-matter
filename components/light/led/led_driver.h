@@ -25,8 +25,7 @@ int led_driver_set_channel(uint8_t channel, uint8_t val);
 
 /* init channel */
 int led_driver_regist_channel(uint8_t channel, gpio_num_t gpio);
-int led_driver_channel_fade_start(uint8_t channel, uint8_t start, uint8_t end, uint32_t speed);
-int led_driver_channel_fade_end(uint8_t channel);
+int led_driver_update_channels(void);
 
 #ifdef __cplusplus
 }

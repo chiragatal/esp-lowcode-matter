@@ -4,6 +4,8 @@
 #include <inttypes.h>
 #include <color_format.h>
 
+#include "soc/gpio_num.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25,17 +27,21 @@ typedef enum {
 */
 typedef enum {
     LIGHT_DEVICE_TYPE_LED = 0,
+    LIGHT_DEVICE_TYPE_WS2812,
     LIGHT_DEVICE_TYPE_MAX,
 } light_device_type_t;
 
 typedef union {
     struct {
-        int red;
-        int green;
-        int blue;
-        int cold;
-        int warm;
+        gpio_num_t red;
+        gpio_num_t green;
+        gpio_num_t blue;
+        gpio_num_t cold;
+        gpio_num_t warm;
     } led_io;
+    struct {
+        gpio_num_t ctrl_io;
+    } ws2812_io;
 } light_io_conf_t;
 
 /**
@@ -65,9 +71,8 @@ typedef  int (* light_dev_init_t) (void);
 typedef void (* light_dev_deinit_t) (void);
 typedef  int (* light_dev_set_channel_t) (uint8_t channel, uint8_t val); /* write(channel, val) */
 typedef  int (* light_dev_get_channel_t) (uint8_t channel, uint8_t *val); /* not implemented */
-typedef  int (* light_dev_regist_channel_t) (uint8_t channel, int gpio);
-typedef  int (* light_dev_hw_fade_start_t) (uint8_t channel, uint8_t start, uint8_t end, uint32_t speed); /* hw fade start */
-typedef  int (* light_dev_hw_fade_end_t) (uint8_t channel); /* hw fade end */
+typedef  int (* light_dev_update_channels_t) (void);    /* use device-specific internal buffer to update the status of device */
+typedef  int (* light_dev_regist_channel_t) (uint8_t channel, gpio_num_t gpio);
 
 // TODO: not sure update() is needed or not. Update() allows us to configure multiple channels one by one and switch on them in the same time
 typedef void (* light_hal_dev_update_t) (int channel); /* not implemented */
@@ -81,9 +86,8 @@ typedef struct {
     light_dev_deinit_t deinit;
     light_dev_set_channel_t set_channel;
     light_dev_get_channel_t get_channel;
+    light_dev_update_channels_t update_channels;
     light_dev_regist_channel_t regist_channel;
-    light_dev_hw_fade_end_t hw_fade_end;
-    light_dev_hw_fade_start_t hw_fade_start;
 } light_dev_if_t;
 
 typedef enum {
@@ -118,10 +122,13 @@ typedef struct {
     union {
         RGB_color_t RGB; /**< RGB color for the effect */
         uint32_t cct; /**< color temperature for the effect */
+        HS_color_t HS;  /* HSV color space for the effect */
+        CW_white_t CW;  /* Cold/Warm space for the effect */
     } color;
-    uint8_t max_brightness; /**< max brightness */
-    uint8_t min_brightness; /**< min brightness */
+        int8_t max_brightness;  /**< max brightness */
+        int8_t min_brightness;  /**< min brightness */
 } light_effect_config_t;
+
 
 int light_driver_init(light_driver_config_t *config);
 int light_driver_set_power(uint8_t val);

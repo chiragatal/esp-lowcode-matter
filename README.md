@@ -1,4 +1,9 @@
-# Low Code: LP Core
+# Low Code: Matter
+
+LowCode lies in between ESP ZeroCode (<https://zerocode.espressif.com/>) which is the fastest way to go to production and ESP Matter (<https://github.com/espressif/esp-matter>) which provides complete flexibility to build Matter devices. Checkout more about the what fits your need [here](./docs/comparison.md).
+
+- Want ESP ZeroCode with slight customization? Use ESP LowCode
+- ESP Matter is getting complex and want to prototype quickly? Use ESP LowCode
 
 ## Get Started
 
@@ -33,3 +38,8 @@ Some other commands to help with development:
 - **Erase Flash**: Erase the flash storage
 - **Menuconfig**: Open the menuconfig for the selected product
 - **Product Clean**: Clean the build system
+
+## Next Steps
+
+- [Device setup and control](./docs/device_setup.md)
+- [Create and customize your own product](./docs/create_product.md)

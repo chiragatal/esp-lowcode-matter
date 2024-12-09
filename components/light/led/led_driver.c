@@ -54,7 +54,6 @@ static uint32_t hpoint = LEDC_DEFAULT_HPOINT;
 
 int led_driver_set_channel(uint8_t channel, uint8_t val)
 {
-    // lp_core_printf("%s(%d, %d)\r\n", __func__, channel, val);
 
     /* LEDC_CHn_HPOINT: config hpoint */
     ledc_ll_set_hpoint(&LEDC, speed_mode, channel, hpoint);
@@ -70,16 +69,15 @@ int led_driver_set_channel(uint8_t channel, uint8_t val)
 
 int led_driver_regist_channel(uint8_t channel, gpio_num_t gpio)
 {
-    // lp_core_printf("%s(%d, %d)\r\n", __func__, channel, gpio);
 
     if (channel <= LED_CHANNEL_NC || channel >= LED_CHANNEL_MAX) return -1;
     if (gpio <= GPIO_NUM_NC || gpio >= GPIO_NUM_MAX) {
-        lp_core_printf("%s: Invalid gpio num: %d\r\n", __func__, gpio);
+        printf("%s: Invalid gpio num: %d\r\n", __func__, gpio);
         return -1;
     }
 
     /* gpio matrix config: 1. func: gpio, 2. I/O/D */
-    gpio_ll_iomux_func_sel(IO_MUX_GPIO0_REG + 0x4 * gpio, PIN_FUNC_GPIO);
+    gpio_ll_iomux_func_sel(GPIO_PIN_MUX_REG[gpio], PIN_FUNC_GPIO);
     gpio_ll_set_level(&GPIO, gpio, 0 /* output_invert */);
     gpio_ll_output_enable(&GPIO, gpio);
     gpio_ll_input_disable(&GPIO, gpio);
@@ -126,7 +124,7 @@ void led_driver_deinit(void)
 
 int led_driver_init(void)
 {
-    // lp_core_printf("%s() called\r\n", __func__);
+    // printf("%s() called\r\n", __func__);
 
     /* init ledc bus clock */
     ledc_ll_enable_bus_clock(true);
@@ -139,7 +137,7 @@ int led_driver_init(void)
     /* enable ledc clock */
     ledc_ll_enable_clock(&LEDC, true);
     ledc_ll_set_slow_clk_sel(&LEDC, glb_clk);
-    lp_core_printf("glb_clk=%d\r\n", glb_clk);
+    printf("glb_clk=%d\r\n", glb_clk);
 
     /* set clock divider & duty resolution */
     ledc_ll_set_clock_divider(&LEDC, speed_mode, timer_sel, clock_divider);
@@ -155,42 +153,6 @@ int led_driver_init(void)
     return 0;
 }
 
-int led_driver_channel_fade_start(uint8_t channel, uint8_t start, uint8_t end, uint32_t speed)
-{
-    // lp_core_printf("%s(%d, %d, %d, %d)\r\n", __func__, channel, start, end, speed);
-    int duty_start = LEDC_MAX_DUTY * start / 100;
-    int duty_end = LEDC_MAX_DUTY * end / 100;
-
-    int dir = duty_start<duty_end?1:0; /* 1:inc, 0:dec */
-    /* In each ${speed/1000} fade cycle, totally ${LEDC_FREQ*speed/1000} pwm cycles */
-    /* each fade happens every ${LEDC_FREQ*speed/1000/LEDC_DUTY_FADE_STEP} pwm cycle */
-    int cycle = LEDC_FREQ * speed / 1000 / LEDC_DUTY_FADE_STEP; 
-    int scale = (dir == 1) ? ((duty_end - duty_start) / LEDC_DUTY_FADE_STEP)
-                            :((duty_start - duty_end) / LEDC_DUTY_FADE_STEP);
-    int step = LEDC_DUTY_FADE_STEP; /* how many step need to do, fixed */
-
-    ledc_ll_set_fade_param(&LEDC, speed_mode, channel, dir, cycle, scale, step);
-    ledc_ll_set_duty_range_wr_addr(&LEDC, speed_mode, channel, 0 /* range */);
-    ulp_lp_core_delay_us(5);
-    ledc_ll_set_range_number(&LEDC, speed_mode, channel, 1);
-
-    /* LEDC_PARA_UP_CHn: enable the configuration above */
-    if (speed_mode == LEDC_LOW_SPEED_MODE) {
-        ledc_ll_ls_channel_update(&LEDC, speed_mode, channel);
-    }
-    return 0;
-}
-
-int led_driver_channel_fade_end(uint8_t channel)
-{
-    ledc_ll_set_fade_param(&LEDC, speed_mode, channel, 1, 1, 0, 0);
-    ledc_ll_set_duty_range_wr_addr(&LEDC, speed_mode, channel, 0 /* range */);
-    ulp_lp_core_delay_us(5);
-    ledc_ll_set_range_number(&LEDC, speed_mode, channel, 1);
-
-    /* LEDC_PARA_UP_CHn: enable the configuration above */
-    if (speed_mode == LEDC_LOW_SPEED_MODE) {
-        ledc_ll_ls_channel_update(&LEDC, speed_mode, channel);
-    }
+int led_driver_update_channels(void) {
     return 0;
 }
