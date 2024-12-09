@@ -27,6 +27,7 @@ int app_driver_init()
     printf("%s: Initializing light driver\n", TAG);
     light_driver_config_t cfg = {
         .device_type = LIGHT_DEVICE_TYPE_WS2812,
+        .channel_comb = LIGHT_CHANNEL_COMB_3CH_RGB,
         .io_conf = {
             .ws2812_io = {
                 .ctrl_io = WS2812_CTRL_IO,
@@ -69,7 +70,7 @@ int app_driver_event_handler(low_code_event_t *event)
     printf("%s: Received event: %d\n", TAG, event->event_type);
     light_effect_config_t effect_config = {
         .type = LIGHT_EFFECT_INVALID,
-        .mode = LIGHT_WORK_MODE_WHITE,
+        .mode = LIGHT_WORK_MODE_COLOR,
         .max_brightness = 100,
         .min_brightness = 10
     };
@@ -79,14 +80,13 @@ int app_driver_event_handler(low_code_event_t *event)
         case LOW_CODE_EVENT_SETUP_MODE_START:
             printf("%s: Setup mode started\n", TAG);
             /* Start Indication */
-            effect_config.type = LIGHT_EFFECT_BREATHE;
-            effect_config.color.cct = 4000;
-            // light_driver_effect_start(&effect_config, 2000, 0);
+            effect_config.type = LIGHT_EFFECT_BLINK;
+            light_driver_effect_start(&effect_config, 2000, 120000);
             break;
         case LOW_CODE_EVENT_SETUP_MODE_END:
             printf("%s: Setup mode ended\n", TAG);
             /* Stop Indication */
-            // light_driver_effect_stop();
+            light_driver_effect_stop();
             break;
         case LOW_CODE_EVENT_SETUP_DEVICE_CONNECTED:
             printf("%s: Device connected during setup\n", TAG);

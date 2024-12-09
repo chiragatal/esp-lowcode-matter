@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.16)
 
 include(../../tools/cmake/low_code.cmake)
 
+list(APPEND SDKCONFIG_DEFAULTS "sdkconfig.defaults")
+
 list(APPEND EXTRA_COMPONENT_DIRS
     ../../components
 )

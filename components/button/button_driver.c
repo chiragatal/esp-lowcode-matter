@@ -211,20 +211,20 @@ button_handle_t iot_button_create(const button_config_t *config)
     }
 
     if (button == NULL) {
-        printf("No space to create button\r\n");
+        printf("No space to create button\n");
         return NULL;
     }
 
 #if CONFIG_BUTTON_DRIVER_USE_LP_GPIO
     if (config->gpio_num < LP_IO_NUM_0 || config->gpio_num > LP_IO_NUM_7) {
-        printf("Invalid gpio %d\r\n", config->gpio_num);
+        printf("Invalid gpio %d\n", config->gpio_num);
         return NULL;
     }
 #endif /* CONFIG_BUTTON_DRIVER_USE_LP_GPIO */
 
 #if CONFIG_BUTTON_DRIVER_USE_HP_GPIO
     if (config->gpio_num <= GPIO_NUM_NC || config->gpio_num >= GPIO_NUM_MAX) {
-        printf("Invalid gpio %d\r\n", config->gpio_num);
+        printf("Invalid gpio %d\n", config->gpio_num);
         return NULL;
     }
 #endif /* CONFIG_BUTTON_DRIVER_USE_HP_GPIO */
@@ -241,7 +241,7 @@ button_handle_t iot_button_create(const button_config_t *config)
     if (timer_debounce) {
         button->timer_debounce = timer_debounce;
     } else {
-        printf("Failed to create timer\r\n");
+        printf("Failed to create timer\n");
         iot_button_delete(button);
         return NULL;
     }
@@ -259,7 +259,7 @@ button_handle_t iot_button_create(const button_config_t *config)
     if (timer_long_press) {
         button->timer_long_press = timer_long_press;
     } else {
-        printf("Failed to create timer\r\n");
+        printf("Failed to create timer\n");
         iot_button_delete(button);
         return NULL;
     }
@@ -271,7 +271,7 @@ button_handle_t iot_button_create(const button_config_t *config)
     button->long_press_time = long_press_time;
     button->short_press_time = short_press_time;
 
-    printf("long press time: %u, short press time: %u, debounce time: %u\r\n", 
+    printf("long press time: %u, short press time: %u, debounce time: %u\n",
                 button->long_press_time, button->short_press_time, BUTTON_DEBOUNCE_TIME);
 #if CONFIG_BUTTON_DRIVER_USE_LP_GPIO
     /* init gpio */
@@ -395,6 +395,6 @@ static void iot_button_isr_handler(uint32_t pin_mask)
                     break;
                 }
             }
-        } 
+        }
     }
 }

@@ -24,12 +24,12 @@
 
 /**
  * To simplify hal driver development, we auto-generated settings for ledc (pwm) controller
- * 
+ *
  * XTAL_CLK timer is used for ledc timer. Frequency is 40MHz
  * pwm frequency is set to 4000Hz
  * pwm duty resolution is set to 10bit (0 ~ 1023)
  * pwm fade step is set to 10% (0%, 10%, 20%, ... 100%)
- * 
+ *
  * can keep it here in led_driver
  */
 #define LEDC_FREQ           4000
@@ -72,7 +72,7 @@ int led_driver_regist_channel(uint8_t channel, gpio_num_t gpio)
 
     if (channel <= LED_CHANNEL_NC || channel >= LED_CHANNEL_MAX) return -1;
     if (gpio <= GPIO_NUM_NC || gpio >= GPIO_NUM_MAX) {
-        printf("%s: Invalid gpio num: %d\r\n", __func__, gpio);
+        printf("%s: Invalid gpio num: %d\n", __func__, gpio);
         return -1;
     }
 
@@ -124,7 +124,7 @@ void led_driver_deinit(void)
 
 int led_driver_init(void)
 {
-    // printf("%s() called\r\n", __func__);
+    // printf("%s() called\n", __func__);
 
     /* init ledc bus clock */
     ledc_ll_enable_bus_clock(true);
@@ -137,7 +137,7 @@ int led_driver_init(void)
     /* enable ledc clock */
     ledc_ll_enable_clock(&LEDC, true);
     ledc_ll_set_slow_clk_sel(&LEDC, glb_clk);
-    printf("glb_clk=%d\r\n", glb_clk);
+    printf("glb_clk=%d\n", glb_clk);
 
     /* set clock divider & duty resolution */
     ledc_ll_set_clock_divider(&LEDC, speed_mode, timer_sel, clock_divider);

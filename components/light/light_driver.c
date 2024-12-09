@@ -80,12 +80,12 @@ static void light_driver_device_ws2812_init(void) {
 int light_driver_init(light_driver_config_t *config)
 {
     if (config->max_brightness > 100 || config->min_brightness < 0 || config->min_brightness > config->max_brightness) {
-        printf("Invalid brightness: max=%d, min=%d\r\n", config->max_brightness, config->min_brightness);
+        printf("Invalid brightness: max=%d, min=%d\n", config->max_brightness, config->min_brightness);
         return -1;
     }
 
     if (config->channel_comb <= LIGHT_CHANNEL_COMB_INVALID || config->channel_comb >= LIGHT_CHANNEL_COMB_MAX) {
-        printf("Invalid light channel combination: %d\r\n", config->channel_comb);
+        printf("Invalid light channel combination: %d\n", config->channel_comb);
         return -1;
     }
 
@@ -113,11 +113,11 @@ int light_driver_init(light_driver_config_t *config)
     switch (config->device_type) {
     #ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_WS2812
     case LIGHT_DEVICE_TYPE_WS2812:
-        printf("Light: WS2812\r\n");
+        printf("Light: WS2812\n");
         light_driver_device_ws2812_init();
-        g_light.dev.regist_channel(LIGHT_CHANNEL_COMB_INVALID, config->io_conf.ws2812_io.ctrl_io); 
+        g_light.dev.regist_channel(LIGHT_CHANNEL_COMB_INVALID, config->io_conf.ws2812_io.ctrl_io);
         if (g_light.dev.init() != 0) {
-            printf("Failed to init device\r\n");
+            printf("Failed to init device\n");
             g_light.dev.deinit();
         }
         g_light.work_mode = LIGHT_CHANNEL_COMB_5CH_RGBCW;
@@ -131,11 +131,11 @@ int light_driver_init(light_driver_config_t *config)
     #endif
     #ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_LED
     case LIGHT_DEVICE_TYPE_LED:
-        printf("Light: LED\r\n");
+        printf("Light: LED\n");
         light_driver_device_led_init();
 
         if (g_light.dev.init() != 0) {
-            printf("Failed to init device\r\n");
+            printf("Failed to init device\n");
             g_light.dev.deinit();
         }
 
@@ -175,13 +175,13 @@ int light_driver_init(light_driver_config_t *config)
             g_light.dev.regist_channel(LED_CHANNEL_WARM, config->io_conf.led_io.warm);
             break;
         default:
-            printf("Unsupported channel setting\r\n");
+            printf("Unsupported channel setting\n");
             break;
         }
         break;
     #endif
     default:
-        printf("Invalid device\r\n");
+        printf("Invalid device\n");
         break;
     }
 
@@ -194,11 +194,11 @@ void light_driver_deinit(void)
 }
 
 /**
- * @brief 
+ * @brief
  * when switching from color mode to white mode number of LED beads changes from 3 to 2, the total intensity is lower
  * followings are very simple placeholder functions to scale down the channel output to avoid intensity jitter when
  * work mode switch from COLOR to WHITE
- * 
+ *
  * @param: scale [0, 100] light intensity
 */
 /*
@@ -220,7 +220,7 @@ static void process_cct_limit(CW_white_t *CW_dst, CW_white_t *CW_src, uint8_t sc
 }
 
 /**
- * light_driver_update() is the single place to take effect of previous changes to g_light.cur_xxx 
+ * light_driver_update() is the single place to take effect of previous changes to g_light.cur_xxx
  * light_driver_set_xxx() function simply change g_light.cur_xxx, but light_driver_update() update the underlying device
  * g_light.cur_xxx are un-normalized values, and light_driver_update() should process channel limits first and then write to device
 */
@@ -254,7 +254,7 @@ static int light_driver_update(void)
             g_light.dev.set_channel(g_light.channel.blue, RGB.blue);
             break;
         default:
-            printf("%s:%d: Incompatible work mode %d with channel comb %d\r\n", __func__, __LINE__, g_light.work_mode, g_light.channel_comb);
+            printf("%s:%d: Incompatible work mode %d with channel comb %d\n", __func__, __LINE__, g_light.work_mode, g_light.channel_comb);
             break;
         }
         break;
@@ -296,7 +296,7 @@ static int light_driver_update(void)
             g_light.dev.set_channel(g_light.channel.warm, CW.warm);
             break;
         default:
-            printf("%s:%d: Incompatible work mode %d with channel comb %d\r\n", __func__, __LINE__, g_light.work_mode, g_light.channel_comb);
+            printf("%s:%d: Incompatible work mode %d with channel comb %d\n", __func__, __LINE__, g_light.work_mode, g_light.channel_comb);
             break;
         }
         break;
@@ -308,7 +308,7 @@ static int light_driver_update(void)
 
 int light_driver_set_brightness(uint8_t val)
 {
-    printf("%s(%d)\r\n", __func__, val);
+    printf("%s(%d)\n", __func__, val);
 
     g_light.cur_brightness = val;
     return light_driver_update();
@@ -316,19 +316,19 @@ int light_driver_set_brightness(uint8_t val)
 
 int light_driver_set_power(uint8_t val)
 {
-    printf("%s:(%d)\r\n", __func__, val);
+    printf("%s:(%d)\n", __func__, val);
     g_light.cur_level = val;
     return light_driver_update();
 }
 
 int light_driver_set_hue(uint16_t val)
 {
-    printf("%s(%d)\r\n", __func__, val);
+    printf("%s(%d)\n", __func__, val);
 
     if (g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_C
                 || g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_W
                 || g_light.channel_comb == LIGHT_CHANNEL_COMB_2CH_CW) {
-        printf("%s: hue not supported by %d\r\n", __func__, g_light.channel_comb);
+        printf("%s: hue not supported by %d\n", __func__, g_light.channel_comb);
         return -1;
     }
 
@@ -341,7 +341,7 @@ int light_driver_set_saturation(uint8_t val)
     if (g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_C
                 || g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_W
                 || g_light.channel_comb == LIGHT_CHANNEL_COMB_2CH_CW) {
-        printf("%s: saturation not supported by %d\r\n", __func__, g_light.channel_comb);
+        printf("%s: saturation not supported by %d\n", __func__, g_light.channel_comb);
         return -1;
     }
 
@@ -353,7 +353,7 @@ int light_driver_set_temperature(uint32_t val)
 {
     if (g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_C
                 || g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_W) {
-        printf("%s: temp not supported by %d\r\n", __func__, g_light.channel_comb);
+        printf("%s: temp not supported by %d\n", __func__, g_light.channel_comb);
         return -1;
     }
 
@@ -364,10 +364,10 @@ int light_driver_set_temperature(uint32_t val)
 int light_driver_set_color_mode(uint8_t val)
 {
     int ret = 0;
-    printf("%s(%d)\r\n", __func__, val);
+    printf("%s(%d)\n", __func__, val);
 
     if (val != LIGHT_WORK_MODE_COLOR && val != LIGHT_WORK_MODE_WHITE) {
-        printf("%s: Unrecognized work mode\r\n", __func__);
+        printf("%s: Unrecognized work mode\n", __func__);
         return -1;
     }
 
@@ -375,7 +375,7 @@ int light_driver_set_color_mode(uint8_t val)
         if (g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_C
                     || g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_W
                     || g_light.channel_comb == LIGHT_CHANNEL_COMB_2CH_CW) {
-            printf("%s: temp not supported by work mode %d\r\n", __func__, g_light.channel_comb);
+            printf("%s: temp not supported by work mode %d\n", __func__, g_light.channel_comb);
             return -1;
         }
     }
@@ -383,7 +383,7 @@ int light_driver_set_color_mode(uint8_t val)
     if (val == LIGHT_WORK_MODE_WHITE) {
         if (g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_C
                     || g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_W) {
-            printf("%s: temp not supported by work mode %d\r\n", __func__, g_light.channel_comb);
+            printf("%s: temp not supported by work mode %d\n", __func__, g_light.channel_comb);
             return -1;
         }
     }
@@ -431,14 +431,14 @@ static void light_effect_handler(lp_sw_timer_handle_t timer_handle, void *arg)
 
     if (g_light.cur_effect.rounds * g_light.cur_effect.effectStepTime >= g_light.cur_effect.total_ms) {
         light_driver_effect_stop();
-        printf("%s: end of effect\r\n", __func__);
+        printf("%s: end of effect\n", __func__);
     }
 }
 
 
 void light_driver_effect_start(light_effect_config_t *config, int speed, int total_ms)
 {
-    printf("%s(config, %d, %d)\r\n", __func__, speed, total_ms);
+    printf("%s(config, %d, %d)\n", __func__, speed, total_ms);
 
     g_light.cur_effect.target_brightness = abs(config->max_brightness - config->min_brightness);
     g_light.cur_effect.offset_brightness = abs(config->min_brightness);
@@ -470,7 +470,7 @@ void light_driver_effect_start(light_effect_config_t *config, int speed, int tot
         break;
     default:
         break;
-    }    
+    }
 
 
     /* execute the first effect: set to max brightness */
@@ -494,7 +494,7 @@ void light_driver_effect_start(light_effect_config_t *config, int speed, int tot
     /* each time we start a new effect, stop the previous effect */
     lp_sw_timer_delete(g_light.cur_effect.timer);
 
-    printf("effect(type=%d, max=%d, min=%d, speed=%d, total_ms=%d, timer=%p)\r\n", 
+    printf("effect(type=%d, max=%d, min=%d, speed=%d, total_ms=%d, timer=%p)\n",
         g_light.cur_effect.type, g_light.cur_effect.target_brightness + g_light.cur_effect.offset_brightness, g_light.cur_effect.offset_brightness,
         g_light.cur_effect.speed, g_light.cur_effect.total_ms, g_light.cur_effect.timer);
 

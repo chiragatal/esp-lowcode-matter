@@ -81,9 +81,8 @@ int app_driver_event_handler(low_code_event_t *event)
         case LOW_CODE_EVENT_SETUP_MODE_START:
             printf("%s: Setup mode started\n", TAG);
             /* Start Indication */
-            effect_config.type = LIGHT_EFFECT_BREATHE;
-            effect_config.color.cct = 4000;
-            light_driver_effect_start(&effect_config, 2000, 0);
+            effect_config.type = LIGHT_EFFECT_BLINK;
+            light_driver_effect_start(&effect_config, 2000, 120000);
             break;
         case LOW_CODE_EVENT_SETUP_MODE_END:
             printf("%s: Setup mode ended\n", TAG);

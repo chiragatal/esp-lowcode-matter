@@ -24,7 +24,7 @@
 
 #define BUTTON_GPIO_NUM ((gpio_num_t)9)
 #define RELAY_GPIO_NUM ((gpio_num_t)2)
-#define INDICATOR_GPIO_NUM ((gpio_num_t)3)
+#define INDICATOR_GPIO_NUM ((gpio_num_t)8)
 
 static const char *TAG = "app_driver";
 
@@ -91,11 +91,11 @@ int app_driver_init()
 
     /* Initialise the light indicator */
     light_driver_config_t cfg = {
-        .device_type = LIGHT_DEVICE_TYPE_LED,
-        .channel_comb = LIGHT_CHANNEL_COMB_1CH_W,
+        .device_type = LIGHT_DEVICE_TYPE_WS2812,
+        .channel_comb = LIGHT_CHANNEL_COMB_3CH_RGB,
         .io_conf = {
-            .led_io = {
-                .warm = INDICATOR_GPIO_NUM,
+            .ws2812_io = {
+                .ctrl_io = INDICATOR_GPIO_NUM,
             },
         },
         .min_brightness = 0,
@@ -124,7 +124,7 @@ int app_driver_event_handler(low_code_event_t *event)
     printf("%s: Received event: %d\n", TAG, event->event_type);
     light_effect_config_t effect_config = {
         .type = LIGHT_EFFECT_INVALID,
-        .mode = LIGHT_WORK_MODE_WHITE, /* Since it is a single channel LED */
+        .mode = LIGHT_WORK_MODE_COLOR, /* Since it is a single channel LED */
         .max_brightness = 100,
         .min_brightness = 10
     };
@@ -135,7 +135,7 @@ int app_driver_event_handler(low_code_event_t *event)
             printf("%s: Setup mode started\n", TAG);
             /* Start Indication */
             effect_config.type = LIGHT_EFFECT_BLINK;
-            light_driver_effect_start(&effect_config, 2000, 0);
+            light_driver_effect_start(&effect_config, 2000, 120000);
             break;
         case LOW_CODE_EVENT_SETUP_MODE_END:
             printf("%s: Setup mode ended\n", TAG);
