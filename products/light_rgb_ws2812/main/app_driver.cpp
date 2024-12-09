@@ -18,7 +18,7 @@
 
 #include "app_priv.h"
 
-#define WS2812_CTRL_IO ((gpio_num_t)(8))
+#define WS2812_CTRL_IO ((gpio_num_t)8)
 
 static const char *TAG = "app_driver";
 

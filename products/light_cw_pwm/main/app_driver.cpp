@@ -18,8 +18,8 @@
 
 #include "app_priv.h"
 
-#define COLD_CHANNEL_IO 4
-#define WARM_CHANNEL_IO 6
+#define COLD_CHANNEL_IO ((gpio_num_t)4)
+#define WARM_CHANNEL_IO ((gpio_num_t)6)
 
 static const char *TAG = "app_driver";
 

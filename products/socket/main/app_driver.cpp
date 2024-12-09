@@ -22,9 +22,9 @@
 
 #include "app_priv.h"
 
-#define BUTTON_GPIO_NUM 9
-#define RELAY_GPIO_NUM 2
-#define INDICATOR_GPIO_NUM 3
+#define BUTTON_GPIO_NUM ((gpio_num_t)9)
+#define RELAY_GPIO_NUM ((gpio_num_t)2)
+#define INDICATOR_GPIO_NUM ((gpio_num_t)3)
 
 static const char *TAG = "app_driver";
 
