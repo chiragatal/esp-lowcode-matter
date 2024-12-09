@@ -14,13 +14,11 @@
 
 #include <low_code_transport.h>
 
-/* This is needed for the timer based events like button press */
-// #include <lp_sw_timer.h>
+#include <lp_sw_timer.h>
 
 void system_loop()
 {
-    /* This is needed for the timer based events like button press */
-    // lp_sw_timer_run();
+    lp_sw_timer_run();
 }
 
 void system_setup()
