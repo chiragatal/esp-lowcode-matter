@@ -12,16 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <low_code_transport.h>
+#include <system.h>
 
 #include <lp_sw_timer.h>
+#include <esp_amp_platform.h>
+#include <low_code_transport.h>
 
 void system_loop()
 {
-    lp_sw_timer_run();
+    system_timer_update();
 }
 
 void system_setup()
 {
     low_code_transport_register_callbacks();
+}
+
+void system_timer_update()
+{
+    lp_sw_timer_run();
+}
+
+void system_sleep(uint32_t seconds)
+{
+    esp_amp_platform_delay_ms(seconds * 1000);
+}
+
+void system_delay(uint32_t seconds)
+{
+    esp_amp_platform_delay_ms(seconds * 1000);
+}
+
+void system_delay_ms(uint32_t ms)
+{
+    esp_amp_platform_delay_ms(ms);
+}
+
+void system_delay_us(uint32_t us)
+{
+    esp_amp_platform_delay_us(us);
 }

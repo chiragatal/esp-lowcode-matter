@@ -12,15 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <low_code_transport.h>
-#include <lp_sw_timer.h>
+#pragma once
 
-void system_loop()
-{
-    lp_sw_timer_run();
-}
+#include <stdint.h>
+#include <low_code.h>
 
-void system_setup()
-{
-    low_code_transport_register_callbacks();
-}
+/* Driver functions */
+int app_driver_init();
+int app_driver_set_socket_state(uint16_t endpoint_id, bool state);
+
+/* Events handler */
+int app_driver_event_handler(low_code_event_t *event);
+
+/* Callbacks from system */
+int low_code_feature_update_from_system(low_code_feature_data_t *data);
+int low_code_event_from_system(low_code_event_t *event);

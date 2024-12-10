@@ -14,8 +14,9 @@
 
 #include <stdio.h>
 
-#include <low_code_transport.h>
 #include <low_code.h>
+#include <low_code_transport.h>
+#include <system.h>
 
 #include "app_priv.h"
 
