@@ -13,9 +13,10 @@
 // limitations under the License.
 
 #include <stdio.h>
-#include <ulp_lp_core_utils.h>
 
+#include <system.h>
 #include <low_code.h>
+
 #include <button_driver.h>
 #include <relay_driver.h>
 #include <light_driver.h>
@@ -74,7 +75,7 @@ int app_driver_init()
     relay_driver_init(RELAY2_GPIO_NUM);
 
     /* Enable interrupts for buttons */
-    ulp_lp_core_sw_intr_enable(true);
+    system_enable_software_interrupt();
 
     /* Initialize button 1 */
     button_config_t btn1_cfg = {

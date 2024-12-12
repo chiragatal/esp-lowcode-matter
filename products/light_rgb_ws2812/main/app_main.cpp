@@ -14,9 +14,8 @@
 
 #include <stdio.h>
 
-#include <low_code.h>
-#include <low_code_transport.h>
 #include <system.h>
+#include <low_code.h>
 
 #include "app_priv.h"
 
@@ -25,7 +24,7 @@ static const char *TAG = "app_main";
 static void setup()
 {
     /* Register callbacks */
-    low_code_register_callbacks(low_code_feature_update_from_system, low_code_event_from_system);
+    low_code_register_callbacks(feature_update_from_system, event_from_system);
 
     /* Initialize driver */
     app_driver_init();
@@ -38,7 +37,7 @@ static void loop()
     low_code_get_event_from_system();
 }
 
-int low_code_feature_update_from_system(low_code_feature_data_t *data)
+int feature_update_from_system(low_code_feature_data_t *data)
 {
     /* Get the device feature updates */
     uint16_t endpoint_id = data->details.endpoint_id;
@@ -63,7 +62,7 @@ int low_code_feature_update_from_system(low_code_feature_data_t *data)
     return 0;
 }
 
-int low_code_event_from_system(low_code_event_t *event)
+int event_from_system(low_code_event_t *event)
 {
     /* Handle the events from low_code_event_type_t */
     return app_driver_event_handler(event);

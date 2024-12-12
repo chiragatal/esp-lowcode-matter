@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <system.h>
-
+#include <ulp_lp_core_utils.h>
 #include <lp_sw_timer.h>
 #include <esp_amp_platform.h>
 #include <low_code_transport.h>
+
+#include <system.h>
 
 void system_loop()
 {
@@ -51,4 +52,9 @@ void system_delay_ms(uint32_t ms)
 void system_delay_us(uint32_t us)
 {
     esp_amp_platform_delay_us(us);
+}
+
+void system_enable_software_interrupt()
+{
+    ulp_lp_core_sw_intr_enable(true);
 }

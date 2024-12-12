@@ -23,3 +23,4 @@ void system_sleep(uint32_t seconds);
 void system_delay(uint32_t seconds);
 void system_delay_ms(uint32_t ms);
 void system_delay_us(uint32_t us);
+void system_enable_software_interrupt();
