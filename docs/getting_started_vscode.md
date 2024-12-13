@@ -1,4 +1,4 @@
-# Low Code: LP Core
+# ESP LowCode: Matter
 
 If you don't want to use [Codespaces](../README.md#start-codespace) (recommended), you can manually setup the development environment on your local machine.
 
