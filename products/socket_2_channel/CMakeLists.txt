@@ -10,4 +10,4 @@ list(APPEND EXTRA_COMPONENT_DIRS
 )
 
 set(PROJECT_VER "1.0")
-project(socket)
+project(socket_2_channel)
