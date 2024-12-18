@@ -99,7 +99,7 @@ typedef struct {
 
 static button_dev_t g_btn_list[MAX_BUTTON_NUM];
 
-static void iot_button_isr_handler(uint32_t pin_mask);
+static void button_driver_isr_handler(uint32_t pin_mask);
 
 #if CONFIG_BUTTON_DRIVER_USE_HP_GPIO
 static bool hp_gpio_intr_handler_registered = false;
@@ -108,7 +108,7 @@ static int hp_gpio_sw_intr_handler(void *arg)
 {
     // TODO: Instead use atomic_cmp_exchg since maincore can reuse the memory, causing the race condition
     uint32_t *pin_mask = (uint32_t*) esp_amp_sys_info_get(0x00, NULL);
-    iot_button_isr_handler(*pin_mask);
+    button_driver_isr_handler(*pin_mask);
     pin_mask = 0;
     return 0;
 }
@@ -181,7 +181,7 @@ static void btn_timer_cb_long_press(lp_sw_timer_handle_t timer, void *args)
     }
 }
 
-button_handle_t iot_button_create(const button_config_t *config)
+button_handle_t button_driver_create(const button_config_t *config)
 {
 
 #if CONFIG_BUTTON_DRIVER_USE_HP_GPIO
@@ -242,7 +242,7 @@ button_handle_t iot_button_create(const button_config_t *config)
         button->timer_debounce = timer_debounce;
     } else {
         printf("Failed to create timer\n");
-        iot_button_delete(button);
+        button_driver_delete(button);
         return NULL;
     }
 
@@ -260,7 +260,7 @@ button_handle_t iot_button_create(const button_config_t *config)
         button->timer_long_press = timer_long_press;
     } else {
         printf("Failed to create timer\n");
-        iot_button_delete(button);
+        button_driver_delete(button);
         return NULL;
     }
 
@@ -322,7 +322,7 @@ button_handle_t iot_button_create(const button_config_t *config)
     return button;
 }
 
-int iot_button_delete(button_handle_t btn_handle)
+int button_driver_delete(button_handle_t btn_handle)
 {
     button_dev_t *button = (button_dev_t *) btn_handle;
 
@@ -344,7 +344,7 @@ int iot_button_delete(button_handle_t btn_handle)
     return 0;
 }
 
-int iot_button_register_cb(button_handle_t btn_handle, button_event_t event, button_cb_t cb, void *usr_data)
+int button_driver_register_cb(button_handle_t btn_handle, button_event_t event, button_cb_t cb, void *usr_data)
 {
     button_dev_t *button = (button_dev_t *) btn_handle;
     if (button < &(g_btn_list[0]) || button > &(g_btn_list[MAX_BUTTON_NUM])) {
@@ -355,7 +355,7 @@ int iot_button_register_cb(button_handle_t btn_handle, button_event_t event, but
     return 0;
 }
 
-int iot_button_unregister_cb(button_handle_t btn_handle, button_event_t event)
+int button_driver_unregister_cb(button_handle_t btn_handle, button_event_t event)
 {
     button_dev_t *button = (button_dev_t *) btn_handle;
 
@@ -369,7 +369,7 @@ int iot_button_unregister_cb(button_handle_t btn_handle, button_event_t event)
     return 0;
 }
 
-static void iot_button_isr_handler(uint32_t pin_mask)
+static void button_driver_isr_handler(uint32_t pin_mask)
 {
     /* loop against all buttons */
     for (int i=0; i<MAX_BUTTON_NUM; i++) {

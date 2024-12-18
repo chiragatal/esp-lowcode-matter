@@ -83,15 +83,15 @@ int app_driver_init()
         .pullup_en = 1,
         .active_level = 0,
     };
-    button_handle_t btn1_handle = iot_button_create(&btn1_cfg);
+    button_handle_t btn1_handle = button_driver_create(&btn1_cfg);
     if (!btn1_handle) {
         printf("Failed to create button 1\n");
         return -1;
     }
 
     /* Register callbacks for button 1 */
-    iot_button_register_cb(btn1_handle, BUTTON_SINGLE_CLICK, app_driver_toggle_socket_state_button_callback, (void*)1);
-    iot_button_register_cb(btn1_handle, BUTTON_LONG_PRESS_UP, app_driver_trigger_factory_reset_button_callback, NULL);
+    button_driver_register_cb(btn1_handle, BUTTON_SINGLE_CLICK, app_driver_toggle_socket_state_button_callback, (void*)1);
+    button_driver_register_cb(btn1_handle, BUTTON_LONG_PRESS_UP, app_driver_trigger_factory_reset_button_callback, NULL);
 
     /* Initialize button 2 */
     button_config_t btn2_cfg = {
@@ -99,15 +99,15 @@ int app_driver_init()
         .pullup_en = 1,
         .active_level = 0,
     };
-    button_handle_t btn2_handle = iot_button_create(&btn2_cfg);
+    button_handle_t btn2_handle = button_driver_create(&btn2_cfg);
     if (!btn2_handle) {
         printf("Failed to create button 2\n");
         return -1;
     }
 
     /* Register callbacks for button 2 */
-    iot_button_register_cb(btn2_handle, BUTTON_SINGLE_CLICK, app_driver_toggle_socket_state_button_callback, (void*)2);
-    iot_button_register_cb(btn2_handle, BUTTON_LONG_PRESS_UP, app_driver_trigger_factory_reset_button_callback, NULL);
+    button_driver_register_cb(btn2_handle, BUTTON_SINGLE_CLICK, app_driver_toggle_socket_state_button_callback, (void*)2);
+    button_driver_register_cb(btn2_handle, BUTTON_LONG_PRESS_UP, app_driver_trigger_factory_reset_button_callback, NULL);
 
     /* Initialize common indicator */
     light_driver_config_t cfg = {

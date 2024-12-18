@@ -10,4 +10,4 @@ list(APPEND EXTRA_COMPONENT_DIRS
 )
 
 set(PROJECT_VER "1.0")
-project(light_rgb_ws2812)
+project(light_rgbcw_ws2812)

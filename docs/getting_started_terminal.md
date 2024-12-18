@@ -58,13 +58,26 @@ esptool.py write_flash $(cat flash_args)
 ### Upload Configuration
 
 Generate and flash the required device certificates and the qr code for the device. This only needs to be done once for each device.
-Open the generated QR code separately.
+
+First, get the mac address of the device by running the following command.
 
 ```sh
 cd $LOW_CODE_PATH/tools/mfg
-./mfg_low_code.sh $LOW_CODE_PATH/products/$SELECTED_PRODUCT
-esptool.py write_flash 0xD000 $LOW_CODE_PATH/products/$SELECTED_PRODUCT/configuration/output/<mac_address>/<mac_address>_esp_secure_cert.bin 0x1F2000 $LOW_CODE_PATH/products/$SELECTED_PRODUCT/configuration/output/<mac_address>/<mac_address>_fctry.bin
+esptool.py chip_id
 ```
+
+It should be in the format of `MAC: 01:23:45:67:89:ab:cd:ef`. Get the mac address in the format of `0123456789ABCDEF` (without colons, and in uppercase).
+
+Then, generate the configuration for the device.
+
+```sh
+cd $LOW_CODE_PATH/tools/mfg
+export MAC_ADDRESS=<mac_address>
+./mfg_low_code.sh $LOW_CODE_PATH/products/$SELECTED_PRODUCT esp32c6 $MAC_ADDRESS
+esptool.py write_flash 0xD000 $LOW_CODE_PATH/products/$SELECTED_PRODUCT/configuration/output/$MAC_ADDRESS/${MAC_ADDRESS}_esp_secure_cert.bin 0x1F2000 $LOW_CODE_PATH/products/$SELECTED_PRODUCT/configuration/output/$MAC_ADDRESS/${MAC_ADDRESS}_fctry.bin
+```
+
+The QR code is generated at `$LOW_CODE_PATH/products/$SELECTED_PRODUCT/configuration/output/$MAC_ADDRESS/qr_code.png`. Open it separately.
 
 ### Upload Code
 
@@ -79,7 +92,7 @@ idf.py build
 Flash: Upload it to the device
 
 ```sh
-esptool.py write_flash 0x20C000 build/light.bin
+esptool.py write_flash 0x20C000 build/$SELECTED_PRODUCT.bin
 ```
 
 Console: Start the device console to view the logs

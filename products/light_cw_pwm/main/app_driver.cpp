@@ -39,9 +39,9 @@ int app_driver_init()
         .max_brightness = 100,
     };
     light_driver_init(&cfg);
-    light_driver_set_power(true);
-    light_driver_set_brightness(100);
     light_driver_set_temperature(4000);
+    light_driver_set_brightness(100);
+    light_driver_set_power(true);
     return 0;
 }
 

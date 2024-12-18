@@ -56,6 +56,14 @@ int feature_update_from_system(low_code_feature_data_t *data)
             uint16_t color_temp = *(uint16_t *)data->value.value;
             printf("%s: Feature update: color temperature: %d\n", TAG, color_temp);
             app_driver_set_light_temperature(color_temp);
+        } else if (feature_id == LOW_CODE_FEATURE_ID_HUE) {  // Hue
+            uint8_t hue = *(uint8_t *)data->value.value;
+            printf("%s: Feature update: hue: %d\n", TAG, hue);
+            app_driver_set_light_hue(hue);
+        } else if (feature_id == LOW_CODE_FEATURE_ID_SATURATION) {  // Saturation
+            uint8_t saturation = *(uint8_t *)data->value.value;
+            printf("%s: Feature update: saturation: %d\n", TAG, saturation);
+            app_driver_set_light_saturation(saturation);
         }
     }
 

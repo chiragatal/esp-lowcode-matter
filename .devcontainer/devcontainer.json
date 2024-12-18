@@ -19,7 +19,8 @@
 					"/workspace/esp-lowcode-matter/**",
 					"/workspace/esp-idf/**",
 					"/workspace/esp-amp/**"
-				]
+				],
+				"git.detectSubmodulesLimit": 25
 			}
 		}
 	},

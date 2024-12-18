@@ -27,7 +27,7 @@ int app_driver_init()
     printf("%s: Initializing light driver\n", TAG);
     light_driver_config_t cfg = {
         .device_type = LIGHT_DEVICE_TYPE_WS2812,
-        .channel_comb = LIGHT_CHANNEL_COMB_3CH_RGB,
+        .channel_comb = LIGHT_CHANNEL_COMB_5CH_RGBCW,
         .io_conf = {
             .ws2812_io = {
                 .ctrl_io = WS2812_CTRL_IO,
@@ -37,10 +37,11 @@ int app_driver_init()
         .max_brightness = 100,
     };
     light_driver_init(&cfg);
-    light_driver_set_power(true);
+    light_driver_set_temperature(4000);
     light_driver_set_hue(100);
     light_driver_set_saturation(100);
     light_driver_set_brightness(100);
+    light_driver_set_power(true);
     return 0;
 }
 
@@ -55,6 +56,20 @@ int app_driver_set_light_brightness(uint8_t brightness)
     brightness = brightness * 100 / 255;
     printf("%s: Setting light brightness: %d\n", TAG, brightness);
     return light_driver_set_brightness(brightness);
+}
+
+int app_driver_set_light_hue(uint8_t hue)
+{
+    hue = hue * 360 / 255;
+    printf("%s: Setting light hue: %d\n", TAG, hue);
+    return light_driver_set_hue(hue);
+}
+
+int app_driver_set_light_saturation(uint8_t saturation)
+{
+    saturation = saturation * 100 / 255;
+    printf("%s: Setting light saturation: %d\n", TAG, saturation);
+    return light_driver_set_saturation(saturation);
 }
 
 int app_driver_set_light_temperature(uint16_t temperature)

@@ -34,14 +34,14 @@ typedef struct {
  *
  * @return A handle to the created button, or NULL in case of error.
  */
-button_handle_t iot_button_create(const button_config_t *config);
+button_handle_t button_driver_create(const button_config_t *config);
 
 /**
  * @brief Delete a button
  *
  * @param btn_handle A button handle to delete
  */
-int iot_button_delete(button_handle_t btn_handle);
+int button_driver_delete(button_handle_t btn_handle);
 
 /**
  * @brief Register the button event callback function.
@@ -51,7 +51,7 @@ int iot_button_delete(button_handle_t btn_handle);
  * @param cb Callback function.
  * @param usr_data user data
  */
-int iot_button_register_cb(button_handle_t btn_handle, button_event_t event, button_cb_t cb, void *usr_data);
+int button_driver_register_cb(button_handle_t btn_handle, button_event_t event, button_cb_t cb, void *usr_data);
 
 /**
  * @brief Unregister all the callbacks associated with the event.
@@ -59,7 +59,7 @@ int iot_button_register_cb(button_handle_t btn_handle, button_event_t event, but
  * @param btn_handle A button handle to unregister
  * @param event Button event
  */
-int iot_button_unregister_cb(button_handle_t btn_handle, button_event_t event);
+int button_driver_unregister_cb(button_handle_t btn_handle, button_event_t event);
 
 #ifdef __cplusplus
 }

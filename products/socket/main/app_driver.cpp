@@ -78,17 +78,17 @@ int app_driver_init()
         .pullup_en = 1,
         .active_level = 0,
     };
-    button_handle_t btn_handle = iot_button_create(&btn_cfg);
+    button_handle_t btn_handle = button_driver_create(&btn_cfg);
     if (!btn_handle) {
         printf("Failed to create the button");
         return -1;
     }
 
     /* Register callback to toggle socket state on button click */
-    iot_button_register_cb(btn_handle, BUTTON_SINGLE_CLICK, app_driver_toggle_socket_state_button_callback, NULL);
+    button_driver_register_cb(btn_handle, BUTTON_SINGLE_CLICK, app_driver_toggle_socket_state_button_callback, NULL);
 
     /* Register callback to factory reset the device on button long press */
-    iot_button_register_cb(btn_handle, BUTTON_LONG_PRESS_UP, app_driver_trigger_factory_reset_button_callback, NULL);
+    button_driver_register_cb(btn_handle, BUTTON_LONG_PRESS_UP, app_driver_trigger_factory_reset_button_callback, NULL);
 
     /* Initialise the light indicator */
     light_driver_config_t cfg = {
