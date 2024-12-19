@@ -44,7 +44,7 @@ static int low_code_transport_event_to_system(low_code_event_t *event)
         return ESP_ERR_NO_MEM;
     }
     memcpy(buffer, event, sizeof(low_code_event_t));
-    memcpy(buffer + sizeof(low_code_event_t), event->event_data, event->event_data_size);
+    memcpy((uint8_t*)buffer + sizeof(low_code_event_t), event->event_data, event->event_data_size);
     int ret = esp_amp_rpmsg_send_nocopy(&esp_amp_device, &esp_amp_endpoint_event, ESP_AMP_ENDPOINT_EVENT, buffer, buffer_size);
     if (ret != 0) {
         printf("%s: esp_amp_rpmsg_send_nocopy failed\n", TAG);
@@ -63,7 +63,7 @@ static int low_code_transport_feature_update_to_system(low_code_feature_data_t *
         return ESP_ERR_NO_MEM;
     }
     memcpy(buffer, data, sizeof(low_code_feature_data_t));
-    memcpy(buffer + sizeof(low_code_feature_data_t), data->value.value, data->value.value_len);
+    memcpy((uint8_t*)buffer + sizeof(low_code_feature_data_t), data->value.value, data->value.value_len);
     int ret = esp_amp_rpmsg_send_nocopy(&esp_amp_device, &esp_amp_endpoint_feature, ESP_AMP_ENDPOINT_FEATURE, buffer, buffer_size);
     if (ret != 0) {
         printf("%s: esp_amp_rpmsg_send_nocopy failed\n", TAG);
@@ -80,8 +80,8 @@ static int from_system_event_cb(void* msg_data, uint16_t data_len, uint16_t src_
         return 0;
     }
     event.event_data = buffer;
-    memcpy(event.event_data, msg_data + sizeof(low_code_event_t), event.event_data_size);
-    int ret = low_code_event_from_transport(&event);
+    memcpy(event.event_data, (uint8_t*)msg_data + sizeof(low_code_event_t), event.event_data_size);
+    low_code_event_from_transport(&event);
     esp_amp_rpmsg_destroy(&esp_amp_device, msg_data);
     return 0;
 }
@@ -94,8 +94,8 @@ static int from_system_data_cb(void* msg_data, uint16_t data_len, uint16_t src_a
         return 0;
     }
     data.value.value = buffer;
-    memcpy(data.value.value, msg_data + sizeof(low_code_feature_data_t), data.value.value_len);
-    int ret = low_code_feature_update_from_transport(&data);
+    memcpy(data.value.value, (uint8_t*)msg_data + sizeof(low_code_feature_data_t), data.value.value_len);
+    low_code_feature_update_from_transport(&data);
     esp_amp_rpmsg_destroy(&esp_amp_device, msg_data);
     return 0;
 }

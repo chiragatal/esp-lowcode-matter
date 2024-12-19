@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdint.h>
 #include <inttypes.h>
 #include "ulp_lp_core_print.h"

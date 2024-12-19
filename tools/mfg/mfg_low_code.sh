@@ -18,7 +18,7 @@ create_status_json() {
 if [ $# -eq 0 ]; then
     echo "Error: Please provide the path to the product folder as an argument."
     echo "Usage: $0 <path_to_product_folder>"
-    exit
+    exit 1
 fi
 
 product_folder="$1"
@@ -28,7 +28,7 @@ mac_address="$3"
 # Validate if the provided path exists and is a directory
 if [ ! -d "$product_folder" ]; then
     echo "Error: The provided path '$product_folder' is not a valid directory."
-    exit
+    exit 1
 fi
 
 # Print the product folder path for confirmation
@@ -41,7 +41,7 @@ if [ -z "$ESP_MATTER_PATH" ]; then
     echo "Error: ESP_MATTER_PATH is not set. Please set it before running this script."
     echo "You can set it by running: export ESP_MATTER_PATH=/path/to/esp-matter"
     create_status_json "$product_folder" "Failure" "ESP_MATTER_PATH is not set" "Please set it by running: export ESP_MATTER_PATH=/path/to/esp-matter" "$mac_address"
-    exit
+    exit 1
 fi
 
 # Find the first .zap file in the product folder
@@ -51,7 +51,7 @@ zap_file=$(find "$(realpath "$product_folder/configuration")" -name "*.zap" -pri
 if [ -z "$zap_file" ]; then
     echo "Error: No .zap file found in $product_folder/configuration"
     create_status_json "$product_folder" "Failure" "No .zap file found" "Check the logs for more details" "$mac_address"
-    exit
+    exit 1
 fi
 
 echo "Using .zap file: $zap_file"
@@ -68,7 +68,7 @@ matter_file=$(find "$(realpath "$product_folder/configuration/output/$mac_addres
 if [ -z "$matter_file" ]; then
     echo "Error: No .matter file found in $product_folder/configuration/output/$mac_address"
     create_status_json "$product_folder" "Failure" "No .matter file found" "Check the logs for more details" "$mac_address"
-    exit
+    exit 1
 fi
 
 echo "Using .matter file: $matter_file"
@@ -81,7 +81,7 @@ python3 main.py "$matter_file"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to execute main.py"
     create_status_json "$product_folder" "Failure" "Failed to execute main.py" "Check the logs for more details" "$mac_address"
-    exit
+    exit 1
 fi
 
 cd -

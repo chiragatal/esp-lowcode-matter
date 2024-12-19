@@ -12,7 +12,8 @@
 				"extensions.ignoreRecommendations": true,
 				"files.exclude": {
 					"esp-idf": false,
-					"esp-amp": false
+					"esp-amp": false,
+					"**/.vscode": true
 				},
 				"C_Cpp.default.includePath": [
 					"${workspaceFolder}/**",
@@ -20,7 +21,9 @@
 					"/workspace/esp-idf/**",
 					"/workspace/esp-amp/**"
 				],
-				"git.detectSubmodulesLimit": 25
+				"git.detectSubmodulesLimit": 25,
+				"editor.wordWrapColumn": 120,
+				"editor.scrollBeyondLastLine": false
 			}
 		}
 	},
