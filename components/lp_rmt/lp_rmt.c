@@ -50,7 +50,7 @@ static void __rmt_hal_tx_channel_reset(rmt_hal_context_t *hal, uint32_t channel)
 // Initialize RMT module on LP core
 bool lp_rmt_init_device(void) {
 
-    lp_core_printf("Initialize RMT module on LP core...\n");
+    printf("Initialize RMT module on LP core...\n");
 
     // enable the bus clock for the RMT peripheral
     rmt_ll_enable_bus_clock(LP_RMT_DEFAULT_GROUP, true);
@@ -67,7 +67,7 @@ bool lp_rmt_init_device(void) {
 // Deinitialize RMT module on LP core
 bool lp_rmt_deinit_device(void) {
 
-    lp_core_printf("Deinitialize RMT module on LP core...\n");
+    printf("Deinitialize RMT module on LP core...\n");
 
     // disable core clock
     rmt_ll_enable_group_clock(lpRmtHalContext.regs, false);
@@ -93,7 +93,7 @@ bool lp_rmt_create_default_tx_channel(lp_rmt_channel_t* defaultChannel) {
 
 static bool lp_rmt_config_gpio(lp_rmt_channel_t* channel) {
 
-    lp_core_printf("Initialize and configure GPIO to work with RMT on LP core...\n");
+    printf("Initialize and configure GPIO to work with RMT on LP core...\n");
 
     /* gpio matrix config: 1. func: gpio, 2. I/O/D */
     gpio_ll_iomux_func_sel(GPIO_PIN_MUX_REG[channel->gpioPin], PIN_FUNC_GPIO);
@@ -112,7 +112,7 @@ static bool lp_rmt_config_gpio(lp_rmt_channel_t* channel) {
 
 bool lp_rmt_config_tx_channel(lp_rmt_channel_t* channel)
 {
-    lp_core_printf("Configure RMT channel on LP core...\n");
+    printf("Configure RMT channel on LP core...\n");
 
     // reset channel, make sure the TX engine is not working, and events are cleared
     __rmt_hal_tx_channel_reset(&lpRmtHalContext, channel->channalId);
@@ -133,7 +133,7 @@ bool lp_rmt_config_tx_channel(lp_rmt_channel_t* channel)
     // calculate realClkResolutionHz
     channel->realClkResolutionHz = channel->groupClkResolutionHz / channel->readlDiv;
 
-    // lp_core_printf("Channel Divider: %lu\n", realDiv);
+    // printf("Channel Divider: %lu\n", realDiv);
     // set clock divider
     rmt_ll_tx_set_channel_clock_div(lpRmtHalContext.regs, channel->channalId, channel->readlDiv);
     rmt_ll_tx_set_mem_blocks(lpRmtHalContext.regs, channel->channalId, 1);
@@ -155,11 +155,11 @@ bool lp_rmt_config_tx_channel(lp_rmt_channel_t* channel)
 
 bool lp_rmt_send_bytes(void* dataBuffer, size_t numBits, lp_rmt_channel_t* channel) {
 
-    // lp_core_printf("Begin to send Bytes through RMT channel %lu\n", channel->channalId);
+    // printf("Begin to send Bytes through RMT channel %lu\n", channel->channalId);
     rmt_ll_tx_stop(lpRmtHalContext.regs, channel->channalId);
     // ulp_lp_core_delay_us(50);
     if (numBits >= 48) {
-        lp_core_printf("Unsupported RMT transmission size: %lu. %d Maximum\n", numBits, 47);
+        // printf("Unsupported RMT transmission size: %lu. %d Maximum\n", numBits, 47);
         return false;
     }
 

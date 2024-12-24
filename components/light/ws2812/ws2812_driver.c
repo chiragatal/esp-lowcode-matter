@@ -6,8 +6,6 @@ static ws2812_buffer_t ws2812Buffer;
 #define LP_RMT_DEFAULT_TX_CHANNEL       (0)
 #define LP_RMT_DEFAULT_CLK_RESOLUTION   XTAL_CLK_FREQ
 
-
-
 int ws2812_driver_init(void) {
     lp_rmt_init_device();
     return 0;
@@ -29,22 +27,15 @@ int ws2812_driver_regist_channel(uint8_t channel, gpio_num_t gpio)
 
     ws2812RmtChannel.bit0 = (rmt_symbol_word_t) {
         .level0 = 1,
-        // XTAL_CLK_FREQ
-        .duration0 = 16,   // 0.4us (static calculation, use XTAL_CLK_FREQ)
-        // .duration0 = 0.4 * ws2812RmtChannel.realClkResolutionHz / 1000000,   // 0.3us (dynamic calculation)
+        .duration0 = 14,
         .level1 = 0,
-        // .duration1 = 0.8 * ws2812RmtChannel.realClkResolutionHz / 1000000    // 0.9us (dynamic calculation)
-        // XTAL_CLK_FREQ
-        .duration1 = 32    // 0.8us (static calculation, use XTAL_CLK_FREQ)
+        .duration1 = 40
     };
     ws2812RmtChannel.bit1 = (rmt_symbol_word_t) {
         .level0 = 1,
-        // XTAL_CLK_FREQ
-        .duration0 = 32,   // 0.8us (static calculation, use XTAL_CLK_FREQ)
-        // .duration0 = 0.8 * ws2812RmtChannel.realClkResolutionHz / 1000000,   // 0.9us (dynamic calculation)
+        .duration0 = 40,
         .level1 = 0,
-        // .duration1 = 0.4 * ws2812RmtChannel.realClkResolutionHz / 1000000    // 0.3us (dynamic calculation)
-        .duration1 = 16    // 0.4us (static calculation, use XTAL_CLK_FREQ)
+        .duration1 = 14
     };
     ws2812RmtChannel.msbFirst = true;
 
@@ -60,6 +51,7 @@ void ws2812_driver_deinit(void) {
 
 int ws2812_driver_set_channel(uint8_t channel, uint8_t val) {
     // As for WS2812, we define the unit of speed as ms (milli second)
+    printf("Setting channel: %d, to val: %d\n", channel, val);
     switch (channel) {
         case WS2812_CHANNEL_RED:
             ws2812Buffer.RGBBuffer.red = val;

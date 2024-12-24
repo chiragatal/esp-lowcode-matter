@@ -17,7 +17,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "esp_mac.h"
-// #include "esp_clk_tree.h"
 #include "hal/rmt_ll.h"
 #include "hal/rmt_hal.h"
 #include "hal/gpio_hal.h"
@@ -28,8 +27,6 @@
 #include "soc/gpio_periph.h"
 #include "soc/rmt_periph.h"
 #include "soc/rtc.h"
-#include "ulp_lp_core_print.h"
-#include "ulp_lp_core_utils.h"
 #include "sdkconfig.h"
 
 

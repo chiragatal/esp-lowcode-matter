@@ -10,7 +10,6 @@
 #include "color_format.h"
 #include "ulp_lp_core_print.h"
 
-
 typedef struct {
     uint8_t red;
     uint8_t green;
@@ -111,16 +110,16 @@ int light_driver_init(light_driver_config_t *config)
     }
 
     switch (config->device_type) {
-    #ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_WS2812
+    #if CONFIG_USE_LIGHT_DEVICE_TYPE_WS2812
     case LIGHT_DEVICE_TYPE_WS2812:
         printf("Light: WS2812\n");
         light_driver_device_ws2812_init();
-        g_light.dev.regist_channel(LIGHT_CHANNEL_COMB_INVALID, config->io_conf.ws2812_io.ctrl_io);
         if (g_light.dev.init() != 0) {
             printf("Failed to init device\n");
             g_light.dev.deinit();
         }
-        g_light.work_mode = LIGHT_CHANNEL_COMB_5CH_RGBCW;
+        g_light.dev.regist_channel(LIGHT_CHANNEL_COMB_INVALID, config->io_conf.ws2812_io.ctrl_io); 
+        g_light.channel_comb = LIGHT_CHANNEL_COMB_3CH_RGB;
         g_light.channel.red = WS2812_CHANNEL_RED;
         g_light.channel.green = WS2812_CHANNEL_GREEN;
         g_light.channel.blue = WS2812_CHANNEL_BLUE;
@@ -226,82 +225,73 @@ static void process_cct_limit(CW_white_t *CW_dst, CW_white_t *CW_src, uint8_t sc
 */
 static int light_driver_update(void)
 {
-    /* check current color mode */
-    /* if in color mode, set rgb channel only; if in white mode, set cw channel only */
-    // printf("Device Type: %d\n", (int)(LIGHT_DEVICE_TYPE_WS2812));
-    // printf("%d\n", (int)(g_light.dev_type));
-
-    #ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_WS2812
-    g_light.dev.set_channel(g_light.channel.brightness, g_light.cur_level ? g_light.cur_brightness : 0);
-    #endif
-
     switch (g_light.work_mode) {
-    case LIGHT_WORK_MODE_COLOR:
-        switch (g_light.channel_comb) {
-        case LIGHT_CHANNEL_COMB_3CH_RGB:
-        case LIGHT_CHANNEL_COMB_5CH_RGBCW:
-            RGB_color_t RGB = {0};
-            if (g_light.cur_level) {
-                // NOTE: hsv_to_rgb has scale down the RGB based on cur_brightness, process_color_limit should not do again
-                hsv_to_rgb(g_light.cur_hs, g_light.cur_brightness, &RGB);
-                #ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_LED
-                process_color_limit(&RGB, &RGB, 100 / 3);
-                #endif
+        case LIGHT_WORK_MODE_COLOR:
+            switch (g_light.channel_comb) {
+                case LIGHT_CHANNEL_COMB_3CH_RGB:
+                case LIGHT_CHANNEL_COMB_5CH_RGBCW:
+                    RGB_color_t RGB = {0};
+                    if (g_light.cur_level) {
+                        // NOTE: hsv_to_rgb has scale down the RGB based on cur_brightness, process_color_limit should not do again
+                        hsv_to_rgb(g_light.cur_hs, g_light.cur_brightness, &RGB);
+#ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_LED
+                        process_color_limit(&RGB, &RGB, 100 / 3);
+#endif
+                    }
+                    /* write to device */
+                    g_light.dev.set_channel(g_light.channel.red, RGB.red);
+                    g_light.dev.set_channel(g_light.channel.green, RGB.green);
+                    g_light.dev.set_channel(g_light.channel.blue, RGB.blue);
+                    break;
+                default:
+                    printf("%s:%d: Incompatible work mode %d with channel comb %d\n", __func__, __LINE__, g_light.work_mode, g_light.channel_comb);
+                    break;
             }
-            /* write to device */
-            g_light.dev.set_channel(g_light.channel.red, RGB.red);
-            g_light.dev.set_channel(g_light.channel.green, RGB.green);
-            g_light.dev.set_channel(g_light.channel.blue, RGB.blue);
+            break;
+        case LIGHT_WORK_MODE_WHITE:
+            int brightness = 0;
+            switch (g_light.channel_comb) {
+                case LIGHT_CHANNEL_COMB_1CH_C:
+                    if (g_light.cur_level) {
+                        brightness = g_light.cur_brightness;
+                    }
+#ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_WS2812
+                g_light.dev.set_channel(g_light.channel.brightness, brightness);
+#endif
+                g_light.dev.set_channel(g_light.channel.cold, brightness);
+                break;
+                case LIGHT_CHANNEL_COMB_1CH_W:
+                    if (g_light.cur_level) {
+                        brightness = g_light.cur_brightness;
+                    }
+#ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_WS2812
+                g_light.dev.set_channel(g_light.channel.brightness, brightness);
+#endif
+                g_light.dev.set_channel(g_light.channel.warm, brightness);
+                break;
+                case LIGHT_CHANNEL_COMB_2CH_CW:
+                case LIGHT_CHANNEL_COMB_5CH_RGBCW:
+                    CW_white_t CW = {0};
+                    if (g_light.cur_level) {
+                        temp_to_cw(g_light.cur_cct, &CW);
+                        brightness = g_light.cur_brightness;
+#ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_LED
+                        process_cct_limit(&CW, &CW, g_light.cur_brightness / 2);
+#endif
+                    }
+#ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_WS2812
+                g_light.dev.set_channel(g_light.channel.brightness, brightness);
+#endif
+                g_light.dev.set_channel(g_light.channel.cold, CW.cold);
+                g_light.dev.set_channel(g_light.channel.warm, CW.warm);
+                break;
+                default:
+                    printf("%s:%d: Incompatible work mode %d with channel comb %d\n", __func__, __LINE__, g_light.work_mode, g_light.channel_comb);
+                    break;
+            }
             break;
         default:
-            printf("%s:%d: Incompatible work mode %d with channel comb %d\n", __func__, __LINE__, g_light.work_mode, g_light.channel_comb);
             break;
-        }
-        break;
-    case LIGHT_WORK_MODE_WHITE:
-        int brightness = 0;
-        switch (g_light.channel_comb) {
-        case LIGHT_CHANNEL_COMB_1CH_C:
-            if (g_light.cur_level) {
-                brightness = g_light.cur_brightness;
-            }
-            #ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_WS2812
-            g_light.dev.set_channel(g_light.channel.brightness, brightness);
-            #endif
-            g_light.dev.set_channel(g_light.channel.cold, brightness);
-            break;
-        case LIGHT_CHANNEL_COMB_1CH_W:
-            if (g_light.cur_level) {
-                brightness = g_light.cur_brightness;
-            }
-            #ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_WS2812
-            g_light.dev.set_channel(g_light.channel.brightness, brightness);
-            #endif
-            g_light.dev.set_channel(g_light.channel.warm, brightness);
-            break;
-        case LIGHT_CHANNEL_COMB_2CH_CW:
-        case LIGHT_CHANNEL_COMB_5CH_RGBCW:
-            CW_white_t CW = {0};
-            if (g_light.cur_level) {
-                temp_to_cw(g_light.cur_cct, &CW);
-                brightness = g_light.cur_brightness;
-                #ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_LED
-                process_cct_limit(&CW, &CW, g_light.cur_brightness / 2);
-                #endif
-            }
-            #ifdef CONFIG_USE_LIGHT_DEVICE_TYPE_WS2812
-            g_light.dev.set_channel(g_light.channel.brightness, brightness);
-            #endif
-            g_light.dev.set_channel(g_light.channel.cold, CW.cold);
-            g_light.dev.set_channel(g_light.channel.warm, CW.warm);
-            break;
-        default:
-            printf("%s:%d: Incompatible work mode %d with channel comb %d\n", __func__, __LINE__, g_light.work_mode, g_light.channel_comb);
-            break;
-        }
-        break;
-    default:
-        break;
     }
     return g_light.dev.update_channels();
 }
@@ -338,6 +328,7 @@ int light_driver_set_hue(uint16_t val)
 
 int light_driver_set_saturation(uint8_t val)
 {
+    printf("%s(%d)\n", __func__, val);
     if (g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_C
                 || g_light.channel_comb == LIGHT_CHANNEL_COMB_1CH_W
                 || g_light.channel_comb == LIGHT_CHANNEL_COMB_2CH_CW) {
