@@ -1,5 +1,12 @@
 # Create and Customise your own product
 
+* [Create and Customise your own product](#create-and-customise-your-own-product)
+* [Understanding the folder structure](#understanding-the-folder-structure)
+* [Create a new product](#create-a-new-product)
+* [Customise the data model](#customise-the-data-model)
+* [Add new drivers and components](#add-new-drivers-and-components)
+* [Porting from Arduino](#porting-from-arduino)
+
 With LowCode, you can either customise an existing product or create a completely new one.
 
 ## Understanding the folder structure
@@ -47,3 +54,24 @@ Refer to [product_configuration.md](product_configuration.md) for more informati
 ## Add new drivers and components
 
 For adding new drivers and components, you can add them to the `components` directory. It needs a `.c` file, a `.h` file and a `CMakeLists.txt` file. Make sure to add this new component to the `CMakeLists.txt` file in the `main` directory to use them in the product.
+
+## Porting from Arduino
+
+We’ve restructured some of the core Arduino functions to make them more descriptive and aligned with lowcode platform. Here’s a table mapping commonly used Arduino functions to their equivalents on lowcode platform:
+
+| **Arduino Function**      | **LowCode Function**  | **Description**                        |
+|---------------------------|----------------------------|----------------------------------------|
+| `pinMode(pin, mode)`       | `system_set_pin_mode(pin, mode)`   | Configures the specified pin as INPUT or OUTPUT. |
+| `digitalWrite(pin, value)` | `system_digital_write(pin, level)` | Writes a value to a digital pin (HIGH or LOW). |
+| `digitalRead(pin)`         | `system_digital_read(pin)`     | Reads the value from a digital pin.    |
+| `delay(ms)`                | `system_delay_ms(ms)`       | Pauses the program for a specified number of milliseconds. |
+| `analogWrite`              | `TODO`       | Writes an analog value (PWM wave) to a pin. |
+| `analogRead`               | `TODO`       | Reads the value from the specified analog pin. |
+
+## Related Documents
+
+* [Product Configuration](./product_configuration.md)
+* [Debugging](./debugging.md)
+* [Programmer's Model](./programmer_model.md)
+* [Getting Started: Codespaces](../README.md)
+* [All Documents](./all_documents.md)

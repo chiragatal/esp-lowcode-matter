@@ -16,6 +16,17 @@
 
 #include <stdint.h>
 
+typedef enum {
+    INPUT,
+    OUTPUT
+} pin_mode_t;
+
+typedef enum {
+    LOW = 0,
+    HIGH,
+} pin_level_t;
+
+
 void system_loop();
 void system_setup();
 void system_timer_update();
@@ -23,4 +34,8 @@ void system_sleep(uint32_t seconds);
 void system_delay(uint32_t seconds);
 void system_delay_ms(uint32_t ms);
 void system_delay_us(uint32_t us);
+uint32_t system_get_time();
 void system_enable_software_interrupt();
+void system_set_pin_mode(int gpio_num, pin_mode_t mode);
+void system_digital_write(int gpio_num, pin_level_t level);
+int system_digital_read(int gpio_num);

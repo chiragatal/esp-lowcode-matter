@@ -13,6 +13,12 @@
 // limitations under the License.
 
 #include <ulp_lp_core_utils.h>
+#include <hal/gpio_ll.h>
+#include <hal/gpio_types.h>
+#include <soc/gpio_struct.h>
+#include <soc/gpio_reg.h>
+#include <soc/interrupt_matrix_struct.h>
+#include <soc/gpio_num.h>
 #include <lp_sw_timer.h>
 #include <esp_amp_platform.h>
 #include <low_code_transport.h>
@@ -54,7 +60,38 @@ void system_delay_us(uint32_t us)
     esp_amp_platform_delay_us(us);
 }
 
+uint32_t system_get_time()
+{
+    return esp_amp_platform_get_time_ms();
+}
+
 void system_enable_software_interrupt()
 {
     ulp_lp_core_sw_intr_enable(true);
+}
+
+void system_set_pin_mode(int gpio_num, pin_mode_t mode)
+{
+    if (mode == OUTPUT) {
+        gpio_ll_output_enable(&GPIO, gpio_num);
+        gpio_ll_pullup_dis(&GPIO, gpio_num);
+        gpio_ll_pulldown_dis(&GPIO, gpio_num);
+        gpio_ll_input_disable(&GPIO, gpio_num);
+        gpio_ll_od_disable(&GPIO, gpio_num);
+    } else {
+        gpio_ll_input_enable(&GPIO, gpio_num);
+        gpio_ll_output_disable(&GPIO, gpio_num);
+    }
+    gpio_ll_intr_disable(&GPIO, gpio_num);
+    gpio_ll_func_sel(&GPIO, gpio_num, PIN_FUNC_GPIO);
+}
+
+void system_digital_write(int gpio_num, pin_level_t level)
+{
+    gpio_ll_set_level(&GPIO, gpio_num, level);
+}
+
+int system_digital_read(int gpio_num)
+{
+    return gpio_ll_get_level(&GPIO, gpio_num);
 }

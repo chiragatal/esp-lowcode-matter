@@ -51,7 +51,6 @@ void ws2812_driver_deinit(void) {
 
 int ws2812_driver_set_channel(uint8_t channel, uint8_t val) {
     // As for WS2812, we define the unit of speed as ms (milli second)
-    printf("Setting channel: %d, to val: %d\n", channel, val);
     switch (channel) {
         case WS2812_CHANNEL_RED:
             ws2812Buffer.RGBBuffer.red = val;

@@ -1,56 +1,59 @@
 {
-	"name": "esp-lowcode-matter-v0.6",
-	"image": "mcr.microsoft.com/devcontainers/cpp:debian-12",
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"GAEsp.vscode-lowcode-extension-beta",
-				"-ms-vscode.cmake-tools",
-				"-twxs.cmake"
-			],
-			"settings": {
-				"extensions.ignoreRecommendations": true,
-				"files.exclude": {
-					"esp-idf": false,
-					"esp-amp": false,
-					"**/.vscode": true
-				},
-				"C_Cpp.default.includePath": [
-					"${workspaceFolder}/**",
-					"/workspace/esp-lowcode-matter/**",
-					"/workspace/esp-idf/**",
-					"/workspace/esp-amp/**"
-				],
-				"git.detectSubmodulesLimit": 25,
-				"editor.wordWrapColumn": 120,
-				"editor.scrollBeyondLastLine": false
-			}
-		}
-	},
-	"workspaceFolder": "/workspace/esp-lowcode-matter",
-	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace/esp-lowcode-matter,type=bind",
-	"remoteUser": "root",
+    "name": "esp-lowcode-matter-v0.6",
+    "image": "mcr.microsoft.com/devcontainers/cpp:debian-12",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "GAEsp.vscode-lowcode-extension-beta",
+                "-ms-vscode.cmake-tools",
+                "-twxs.cmake"
+            ],
+            "settings": {
+                "extensions.ignoreRecommendations": true,
+                "files.exclude": {
+                    "esp-idf": false,
+                    "esp-amp": false,
+                    "**/.vscode": true
+                },
+                "C_Cpp.default.includePath": [
+                    "${workspaceFolder}/**",
+                    "/workspace/esp-lowcode-matter/**",
+                    "/workspace/esp-idf/**",
+                    "/workspace/esp-amp/**"
+                ],
+                "git.detectSubmodulesLimit": 25,
+                "editor.wordWrapColumn": 120,
+                "editor.scrollBeyondLastLine": false,
+                "terminal.integrated.scrollback": 20000,
+                "workbench.startupEditor": "none",
+                "editor.snippetSuggestions": "inline"
+            }
+        }
+    },
+    "workspaceFolder": "/workspace/esp-lowcode-matter",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace/esp-lowcode-matter,type=bind",
+    "remoteUser": "root",
 
-	"onCreateCommand": "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git wget flex bison gperf python3 python3-pip python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 libcairo2-dev && mkdir -p /workspace && cd /workspace && git clone --depth 1 https://github.com/espressif/esp-idf.git -b release/v5.3 && cd /workspace/esp-idf && git submodule update --init && ./install.sh esp32c6 && . ./export.sh && cd /workspace && git clone --depth 1 https://github.com/chiragatal/esp-amp.git -b main && cd /workspace/esp-amp && export ESP_AMP_PATH=/workspace/esp-amp && cd /workspace/esp-lowcode-matter && export LOW_CODE_PATH=/workspace/esp-lowcode-matter && ./install.sh && . ./export.sh && echo '. /workspace/esp-idf/export.sh' >> ~/.bashrc && echo '. /workspace/esp-lowcode-matter/export.sh' >> ~/.bashrc && cd /workspace/esp-lowcode-matter/products && for dir in */; do if [ \"$dir\" != \"common/\" ]; then cd \"$dir\" && idf.py set-target esp32c6 && idf.py build && cd ..; fi; done && cd /workspace/esp-lowcode-matter",
+    "onCreateCommand": "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git wget flex bison gperf python3 python3-pip python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 libcairo2-dev && mkdir -p /workspace && cd /workspace && git clone --depth 1 https://github.com/espressif/esp-idf.git -b release/v5.3 && cd /workspace/esp-idf && git submodule update --init && ./install.sh esp32c6 && . ./export.sh && cd /workspace && git clone --depth 1 https://github.com/chiragatal/esp-amp.git -b main && cd /workspace/esp-amp && export ESP_AMP_PATH=/workspace/esp-amp && cd /workspace/esp-lowcode-matter && export LOW_CODE_PATH=/workspace/esp-lowcode-matter && ./install.sh && . ./export.sh && echo '. /workspace/esp-idf/export.sh' >> ~/.bashrc && echo '. /workspace/esp-lowcode-matter/export.sh' >> ~/.bashrc && cd /workspace/esp-lowcode-matter/products && for dir in */; do if [ \"$dir\" != \"common/\" ]; then cd \"$dir\" && idf.py set-target esp32c6 && idf.py build && cd ..; fi; done && cd /workspace/esp-lowcode-matter",
 
-	"containerEnv": {
-		"IDF_PATH": "/workspace/esp-idf",
-		"ESP_AMP_PATH": "/workspace/esp-amp",
-		"LOW_CODE_PATH": "/workspace/esp-lowcode-matter",
-		"ESP_MATTER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter",
-		"ZAP_INSTALL_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap",
-		"ESP_RMAKER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-rainmaker",
-		"ESP_SECURE_CERT_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp_secure_cert_mgr",
-		"MATTER_ONE_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/matter-one"
-	},
-	"remoteEnv": {
-		"IDF_PATH": "/workspace/esp-idf",
-		"ESP_AMP_PATH": "/workspace/esp-amp",
-		"LOW_CODE_PATH": "/workspace/esp-lowcode-matter",
-		"ESP_MATTER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter",
-		"ZAP_INSTALL_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap",
-		"ESP_RMAKER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-rainmaker",
-		"ESP_SECURE_CERT_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp_secure_cert_mgr",
-		"MATTER_ONE_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/matter-one"
-	}
+    "containerEnv": {
+        "IDF_PATH": "/workspace/esp-idf",
+        "ESP_AMP_PATH": "/workspace/esp-amp",
+        "LOW_CODE_PATH": "/workspace/esp-lowcode-matter",
+        "ESP_MATTER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter",
+        "ZAP_INSTALL_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap",
+        "ESP_RMAKER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-rainmaker",
+        "ESP_SECURE_CERT_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp_secure_cert_mgr",
+        "MATTER_ONE_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/matter-one"
+    },
+    "remoteEnv": {
+        "IDF_PATH": "/workspace/esp-idf",
+        "ESP_AMP_PATH": "/workspace/esp-amp",
+        "LOW_CODE_PATH": "/workspace/esp-lowcode-matter",
+        "ESP_MATTER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter",
+        "ZAP_INSTALL_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-matter/connectedhomeip/connectedhomeip/.environment/cipd/packages/zap",
+        "ESP_RMAKER_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp-rainmaker",
+        "ESP_SECURE_CERT_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/esp_secure_cert_mgr",
+        "MATTER_ONE_PATH": "/workspace/esp-lowcode-matter/tools/dependencies/matter-one"
+    }
 }
