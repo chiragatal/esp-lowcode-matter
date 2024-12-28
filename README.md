@@ -2,8 +2,6 @@
 
 ESP LowCode for Matter helps you build Matter devices quickly and easily and in a very lightweight way.
 
-TODO
-
 This is currently only supported on ESP32-C6. We are working on supporting other ESP32 series as well. Checkout more in [discussions](https://github.com/chiragatal/esp-lowcode-matter/discussions).
 
 LowCode offers several key features that make the development and getting started quick and easy:
