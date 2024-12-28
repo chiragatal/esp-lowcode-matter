@@ -35,6 +35,8 @@ Now you should be able to see the full fledged VS Code. There should be files an
 
 ### Start Development
 
+Wait for the `LowCode is Ready` message in the terminal.
+
 Out of the box, LowCode offers some products in `esp-lowcode-matter/products` folder. Start by clicking the "Select Product" button on the **bottom of the screen (status bar)**.
 
 ![Status Bar](./docs/images/status_bar.png)
